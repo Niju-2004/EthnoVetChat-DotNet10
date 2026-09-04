@@ -70,6 +70,22 @@ namespace EthnovetChat.ServiceLayer.Services
                 contextText = _ragService.FormatRagContext(remedies);
             }
 
+            // Fast-path triage: Greetings and animal declarations do not require remote LLM latency (< 15ms response)
+            if (intent == ChatIntent.Greeting || intent == ChatIntent.AnimalOnly)
+            {
+                var fastAnswer = GenerateFallbackResponse(intent, remedies, detectedAnimal, language);
+                _sessionService.RecordTurn(session.SessionId, request.Message, fastAnswer, detectedAnimal, language);
+                return new ChatResponseDto
+                {
+                    Answer = fastAnswer,
+                    Language = language,
+                    RelevantRemedies = new List<RemedyDto>(),
+                    IsAiGenerated = false,
+                    SessionId = session.SessionId,
+                    DetectedAnimal = detectedAnimal
+                };
+            }
+
             string answer = string.Empty;
             bool isAiGenerated = false;
 
@@ -104,6 +120,141 @@ namespace EthnovetChat.ServiceLayer.Services
                 IsAiGenerated = isAiGenerated,
                 SessionId = session.SessionId,
                 DetectedAnimal = detectedAnimal
+            };
+        }
+
+        public async IAsyncEnumerable<ChatStreamEvent> StreamChatAsync(
+            ChatRequestDto request,
+            [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            // 1. Get or create active session
+            var session = _sessionService.GetOrCreateSession(request.SessionId);
+            var history = _sessionService.GetRollingHistory(session.SessionId, maxTurns: 5);
+
+            // 2. Detect language & animal, inheriting from ongoing session if omitted in follow-up
+            var language = _ragService.DetectLanguage(request.Message, request.Language ?? session.PersistedLanguage);
+            var newlyDetectedAnimal = _ragService.DetectAnimal(request.Message, request.Animal);
+            var detectedAnimal = newlyDetectedAnimal ?? session.PersistedAnimal;
+
+            // Check if conversation already has established medical context (for short follow-ups)
+            bool hasPriorMedicalContext = history.Any(m => m.Role == "model" &&
+                (m.Content.Contains("Ingredients") || m.Content.Contains("மூலிகைகள்") ||
+                 m.Content.Contains("Dosage") || m.Content.Contains("அளவு") ||
+                 m.Content.Contains("Condition Identified") || m.Content.Contains("சிகிச்சை")));
+
+            // 3. Classify User Intent: Greeting, AnimalOnly, MedicalQuery, or GeneralInquiry
+            var intent = _ragService.DetectIntent(request.Message, detectedAnimal, hasPriorMedicalContext);
+            _logger.LogInformation("Streaming chat for session {SessionId}. Intent: {Intent}, Animal: {Animal}, Lang: {Lang}",
+                session.SessionId, intent, detectedAnimal, language);
+
+            IReadOnlyList<EthnovetRemedy> remedies = new List<EthnovetRemedy>();
+            string contextText = string.Empty;
+
+            // 4. Clinical Triage: Only retrieve remedies if intent is an actual Medical Query
+            if (intent == ChatIntent.MedicalQuery)
+            {
+                var searchQuery = request.Message;
+                if (request.Message.Split(' ').Length < 6 && history.Count > 0)
+                {
+                    var lastUserTurn = history.LastOrDefault(m => m.Role == "user")?.Content;
+                    if (!string.IsNullOrWhiteSpace(lastUserTurn))
+                    {
+                        searchQuery = $"{request.Message} {lastUserTurn}";
+                    }
+                }
+
+                remedies = await _ragService.RetrieveRelevantRemediesAsync(
+                    searchQuery,
+                    detectedAnimal,
+                    topK: 3,
+                    cancellationToken);
+
+                contextText = _ragService.FormatRagContext(remedies);
+            }
+
+            // Fast-path triage: Greetings and animal declarations yield immediately (< 15ms)
+            if (intent == ChatIntent.Greeting || intent == ChatIntent.AnimalOnly)
+            {
+                var fastAnswer = GenerateFallbackResponse(intent, remedies, detectedAnimal, language);
+                _sessionService.RecordTurn(session.SessionId, request.Message, fastAnswer, detectedAnimal, language);
+
+                yield return new ChatStreamEvent
+                {
+                    EventType = "meta",
+                    SessionId = session.SessionId,
+                    DetectedAnimal = detectedAnimal,
+                    Language = language,
+                    RelevantRemedies = new List<RemedyDto>(),
+                    IsAiGenerated = false
+                };
+
+                yield return new ChatStreamEvent
+                {
+                    EventType = "token",
+                    Token = fastAnswer
+                };
+
+                yield return new ChatStreamEvent
+                {
+                    EventType = "done"
+                };
+
+                yield break;
+            }
+
+            // 5. Emit initial metadata with matched remedies
+            yield return new ChatStreamEvent
+            {
+                EventType = "meta",
+                SessionId = session.SessionId,
+                DetectedAnimal = detectedAnimal,
+                Language = language,
+                RelevantRemedies = remedies.Select(RemedyDto.FromEntity).ToList(),
+                IsAiGenerated = _geminiService.IsConfigured
+            };
+
+            var fullAnswerBuilder = new StringBuilder();
+            bool streamedAny = false;
+
+            // 6. Stream tokens from Gemini
+            if (_geminiService.IsConfigured)
+            {
+                var systemInstruction = BuildSystemInstruction(language);
+                var userPrompt = BuildUserPrompt(request.Message, detectedAnimal, contextText, language, intent, remedies.Count > 0);
+
+                await foreach (var token in _geminiService.StreamResponseAsync(systemInstruction, history, userPrompt, cancellationToken))
+                {
+                    if (!string.IsNullOrEmpty(token))
+                    {
+                        streamedAny = true;
+                        fullAnswerBuilder.Append(token);
+                        yield return new ChatStreamEvent
+                        {
+                            EventType = "token",
+                            Token = token
+                        };
+                    }
+                }
+            }
+
+            // 7. If model didn't stream anything (offline/timeout), provide synthesized fallback
+            if (!streamedAny)
+            {
+                var fallbackAnswer = GenerateFallbackResponse(intent, remedies, detectedAnimal, language);
+                fullAnswerBuilder.Append(fallbackAnswer);
+                yield return new ChatStreamEvent
+                {
+                    EventType = "token",
+                    Token = fallbackAnswer
+                };
+            }
+
+            var finalAnswer = fullAnswerBuilder.ToString();
+            _sessionService.RecordTurn(session.SessionId, request.Message, finalAnswer, detectedAnimal, language);
+
+            yield return new ChatStreamEvent
+            {
+                EventType = "done"
             };
         }
 

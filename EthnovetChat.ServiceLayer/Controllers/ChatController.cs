@@ -46,6 +46,37 @@ namespace EthnovetChat.ServiceLayer.Controllers
         }
 
         /// <summary>
+        /// Stream chat responses in real-time with Server-Sent Events (SSE).
+        /// Emits meta, token, and done events for instant word-by-word display.
+        /// </summary>
+        [HttpPost("stream")]
+        public async Task StreamChat([FromBody] ChatRequestDto request, CancellationToken cancellationToken)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(request.Message))
+            {
+                Response.StatusCode = StatusCodes.Status400BadRequest;
+                await Response.WriteAsync("{\"error\":\"Message is required.\"}", cancellationToken);
+                return;
+            }
+
+            Response.Headers.Append("Content-Type", "text/event-stream");
+            Response.Headers.Append("Cache-Control", "no-cache");
+            Response.Headers.Append("Connection", "keep-alive");
+
+            var jsonOptions = new System.Text.Json.JsonSerializerOptions
+            {
+                PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
+            };
+
+            await foreach (var evt in _chatService.StreamChatAsync(request, cancellationToken))
+            {
+                var payload = System.Text.Json.JsonSerializer.Serialize(evt, jsonOptions);
+                await Response.WriteAsync($"data: {payload}\n\n", cancellationToken);
+                await Response.Body.FlushAsync(cancellationToken);
+            }
+        }
+
+        /// <summary>
         /// Search or filter ethnoveterinary remedies directly.
         /// </summary>
         [HttpGet("remedies")]

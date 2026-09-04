@@ -3,7 +3,7 @@ import { Header } from './components/Header';
 import { AnimalSelector } from './components/AnimalSelector';
 import { MessageItem } from './components/MessageItem';
 import { ChatInput } from './components/ChatInput';
-import type { ChatMessage, ChatResponse } from './types';
+import type { ChatMessage } from './types';
 import { Sparkles, AlertCircle } from 'lucide-react';
 
 const SESSION_KEY = 'ethnovet_chat_session_id';
@@ -78,7 +78,7 @@ export const App: React.FC = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
 
-  // Send message to backend
+  // Send message to backend with real-time SSE streaming
   const handleSendMessage = async (text: string) => {
     if (!text.trim() || isLoading) return;
 
@@ -92,11 +92,22 @@ export const App: React.FC = () => {
       language: language,
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    const botMsgId = 'bot_' + Date.now();
+    const initialBotMessage: ChatMessage = {
+      id: botMsgId,
+      role: 'assistant',
+      content: '',
+      timestamp: new Date().toISOString(),
+      relevantRemedies: [],
+      isAiGenerated: false,
+      language: language,
+    };
+
+    setMessages((prev) => [...prev, userMessage, initialBotMessage]);
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/chat', {
+      const response = await fetch('/api/chat/stream', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -109,33 +120,71 @@ export const App: React.FC = () => {
         }),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        throw new Error(
-          errorData?.message || `Server returned error status ${response.status}`
-        );
+      if (!response.ok || !response.body) {
+        throw new Error(`Server returned status ${response.status}`);
       }
 
-      const data: ChatResponse = await response.json();
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder('utf-8');
+      let buffer = '';
 
-      // If backend detects animal and none was selected, auto-highlight
-      if (data.detectedAnimal && !selectedAnimal) {
-        setSelectedAnimal(data.detectedAnimal.toLowerCase());
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed.startsWith('data: ')) continue;
+          const jsonStr = trimmed.substring(6).trim();
+          if (!jsonStr) continue;
+
+          try {
+            const evt = JSON.parse(jsonStr);
+            if (evt.eventType === 'meta') {
+              if (evt.detectedAnimal && !selectedAnimal) {
+                setSelectedAnimal(evt.detectedAnimal.toLowerCase());
+              }
+              setMessages((prev) =>
+                prev.map((msg) =>
+                  msg.id === botMsgId
+                    ? {
+                        ...msg,
+                        relevantRemedies: evt.relevantRemedies || [],
+                        isAiGenerated: evt.isAiGenerated ?? false,
+                        language: evt.language || language,
+                      }
+                    : msg
+                )
+              );
+            } else if (evt.eventType === 'token' && evt.token) {
+              setMessages((prev) =>
+                prev.map((msg) =>
+                  msg.id === botMsgId
+                    ? { ...msg, content: msg.content + evt.token }
+                    : msg
+                )
+              );
+            }
+          } catch (e) {
+            console.error('Error parsing SSE event:', e);
+          }
+        }
       }
-
-      const botMessage: ChatMessage = {
-        id: 'bot_' + Date.now(),
-        role: 'assistant',
-        content: data.answer,
-        timestamp: new Date().toISOString(),
-        relevantRemedies: data.relevantRemedies || [],
-        isAiGenerated: data.isAiGenerated,
-        language: data.language || language,
-      };
-
-      setMessages((prev) => [...prev, botMessage]);
     } catch (err: any) {
-      console.error('Chat error:', err);
+      console.error('Chat streaming error:', err);
+      // If no tokens were streamed, clean up the empty bot bubble
+      setMessages((prev) => {
+        const currentBot = prev.find((m) => m.id === botMsgId);
+        if (currentBot && currentBot.content.trim().length > 0) {
+          return prev;
+        }
+        return prev.filter((m) => m.id !== botMsgId);
+      });
+
       setError(
         language === 'ta'
           ? 'மன்னிக்கவும், தகவலைப் பெறுவதில் பிழை ஏற்பட்டது. தயவுசெய்து மீண்டும் முயற்சிக்கவும்.'
