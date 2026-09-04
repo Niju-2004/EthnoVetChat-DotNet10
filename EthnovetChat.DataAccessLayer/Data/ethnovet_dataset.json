@@ -1,0 +1,411 @@
+[
+  {
+    "id": 0,
+    "disease": "Herbal masala bolus for all Digestive Problems",
+    "animal": "cow",
+    "symptoms": "anorexia, indigestion, off feed, absence of rumination, impaction",
+    "treatment": "First grind all dry items in a mixi viz. black pepper, jeera, coriander seeds, fenugreek, ajwain, red chillies. Then grind all the fresh herbs viz. Aloe vera, curry leaf, garlic, tulsi, ginger, turmeric, coconut (grated), galo and tarwar. After that mix together both the above items. Now add jaggery (after making into small pieces), and rock salt, (sodium bicarbonate) and mix it thoroughly. At the end make a bolus of 100 gm each (lemon fruit size) and administer orally. For young animals (calf, sheep or goat) give half the quantity or reduce the quantity according to the body weight of animals. It can be given monthly once preferably in empty stomach. For problematic cases continue the treatment for 2-3 days.",
+    "ingredients": "Kalimirch (black pepper) 10 gm, Jeera (cumin) 10gm, Dhaniya (coriander seeds) 20 gm, Fenugreek (methi) 20 gm, Ajwain (Trachyspermum ammi) 10 gm, Adrak (ginger) 50 gm, Haldi (turmeric) 50 gm (fresh), Gheekumari (Aloe vera) 100 gm, Galo / batindu (Tinospora cordifolia) stem and leaves 100 gm, Neem leaves 100 gm, Moringa / Sahjan (Moringa oleifera) leaves 100 gm, Guava leaves / Amrood (tender) 100 gm, Bari Chirmi / Chirputa (Cardiospermum halicacabum) 100 gm, Lahsun (garlic) 50 gm, Lallmirch (red pepper /chillies) 50 gm, Paan (betel leaves) 10 number, Tulsi leaves 50 gm, Tarwar leaves and flowers (Cassia auriculata) 100gm, Nariyal (Coconut) 100 gm, Gud (Jaggery) 100gm, rock salt 50 gm, Khaneka soda (Sodium bicarbonate) 100 gm"
+  },
+  {
+    "id": 1,
+    "disease": "Herbal masala bolus for all Digestive Problems",
+    "animal": "goat or sheeps",
+    "symptoms": "anorexia, indigestion, off feed, absence of rumination, impaction",
+    "treatment": "First grind all dry items in a mixi viz. black pepper, jeera, coriander seeds, fenugreek, ajwain, red chillies. Then grind all the fresh herbs viz. Aloe vera, curry leaf, garlic, tulsi, ginger, turmeric, coconut (grated), galo and tarwar. After that mix together both the above items. Now add jaggery (after making into small pieces), and rock salt, (sodium bicarbonate) and mix it thoroughly. At the end make a bolus of 100 gm each (lemon fruit size) and administer orally. For young animals (calf, sheep or goat) give half the quantity or reduce the quantity according to the body weight of animals. It can be given monthly once preferably in empty stomach. For problematic cases continue the treatment for 2-3 days.",
+    "ingredients": "Kalimirch (black pepper) 10 gm, Jeera (cumin) 10gm, Dhaniya (coriander seeds) 20 gm, Fenugreek (methi) 20 gm, Ajwain (Trachyspermum ammi) 10 gm, Adrak (ginger) 50 gm, Haldi (turmeric) 50 gm (fresh), Gheekumari (Aloe vera) 100 gm, Galo / batindu (Tinospora cordifolia) stem and leaves 100 gm, Neem leaves 100 gm, Moringa / Sahjan (Moringa oleifera) leaves 100 gm, Guava leaves / Amrood (tender) 100 gm, Bari Chirmi / Chirputa (Cardiospermum halicacabum) 100 gm, Lahsun (garlic) 50 gm, Lallmirch (red pepper /chillies) 50 gm, Paan (betel leaves) 10 number, Tulsi leaves 50 gm, Tarwar leaves and flowers (Cassia auriculata) 100gm, Nariyal (Coconut) 100 gm, Gud (Jaggery) 100gm, rock salt 50 gm, Khaneka soda (Sodium bicarbonate) 100 gm"
+  },
+  {
+    "id": 2,
+    "disease": "Tympani",
+    "animal": "cow",
+    "symptoms": "Stomach bulged, difficulties in breathing",
+    "treatment": "1. Administer 200 ml each of castor oil shaken well and administered orally at an interval of 4 hours.\n2. Betel leaves (paan) 10 number\n3. Garlic (Lahsun) 10 gm, administer orally at 6 hours interval for large animals. Reduce the quantity to small animal.",
+    "ingredients": "Paan, adrak, kalimirch, castor oil, garlic"
+  },
+  {
+    "id": 3,
+    "disease": "Tympani",
+    "animal": "goat",
+    "symptoms": "Stomach bulged, difficulties in breathing",
+    "treatment": "1. Administer 200 ml each of castor oil shaken well and administered orally at an interval of 4 hours.\n2. Betel leaves (paan) 10 number\n3. Garlic (Lahsun) 10 gm, administer orally at 6 hours interval for large animals. Reduce the quantity to small animal.",
+    "ingredients": "Paan, adrak, kalimirch, castor oil, garlic"
+  },
+  {
+    "id": 4,
+    "disease": "Diarrhea",
+    "animal": "cow",
+    "symptoms": "Watery dung",
+    "treatment": "Grind one handful each of tender leaves of pomegranate, leaves of neem, tender leaves of guava along with dried ginger 50 gm into a bolus and administer one bolus at a time for 3 times until diarrhea gets cured.",
+    "ingredients": "Neem, amrud (guava), jamphal, anaar (pomegranate), dried ginger"
+  },
+  {
+    "id": 5,
+    "disease": "Diarrhea",
+    "animal": "goat",
+    "symptoms": "Watery dung",
+    "treatment": "Grind one handful each of tender leaves of pomegranate, leaves of neem, tender leaves of guava along with dried ginger 50 gm into a bolus and administer one bolus at a time for 3 times until diarrhea gets cured.",
+    "ingredients": "Neem, amrud (guava), jamphal, anaar (pomegranate), dried ginger"
+  },
+  {
+    "id": 6,
+    "disease": "Constipation",
+    "animal": "cow",
+    "symptoms": "Lack of defecation, hard pelleted dung",
+    "treatment": "1. Enema can be given (boil 10 litres of water after adding 100 gm neem leaves and cooled and administer through rectum of large animals). Avoid early stage pregnant animals.\n2. Laxatives like castor oil, raw linseed oil (500ml) can be given for 1-2 days according to species and body weight of animal. Given as drench for 2-3 days or as required.\n3. A decoction prepared with 100 gm of haldi (turmeric rhizome) in 1 litre of water may be given once daily for 1-3 days to large animals.",
+    "ingredients": "100 gm neem leaves, Laxatives like castor oil, raw linseed oil (500ml), 100 gm of haldi (turmeric rhizome)"
+  },
+  {
+    "id": 7,
+    "disease": "Constipation",
+    "animal": "goat",
+    "symptoms": "Lack of defecation",
+    "treatment": "1. Enema can be given (boil 10 litres of water after adding 100 gm neem leaves and cooled and administer through rectum of large animals). Avoid early stage pregnant animals.\n2. Laxatives like castor oil, raw linseed oil (500ml) can be given for 1-2 days according to species and body weight of animal. Given as drench for 2-3 days or as required.\n3. A decoction prepared with 100 gm of haldi (turmeric rhizome) in 1 litre of water may be given once daily for 1-3 days to large animals.",
+    "ingredients": "100 gm neem leaves, Laxatives like castor oil, raw linseed oil (500ml), 100 gm of haldi (turmeric rhizome)"
+  },
+  {
+    "id": 8,
+    "disease": "Endoparasites (Intestinal worms)",
+    "animal": "cow",
+    "symptoms": "Animals emaciated, thick body hairs, foul smelling stools with worms",
+    "treatment": "Neem, Nirgundi, Gheekumari, Sangkupi, Akamdar (Aak). They are to be taken at 1 kg each. All are to be ground well by sprinkling little water and filtered, obtaining 4 litres of herbal mixture. Then 30 ml of the extract is taken and administered for one adult sheep or goat. For younger sheep or goat less than 3 months old, 10 ml has to be administered orally. For adult cattle 100 ml has to be administered. This can be stored for more than one month. The dewormer arrests loose motion, results in solid dung free from obnoxious odor, increases grazing efficiency, and promotes health.",
+    "ingredients": "Leaves of nirgundi (Vitex negundo), Leaf petals of khorpad (Aloe vera), Neem seeds, Leaves of sangkupi (Clerodendrum inerme), Leaves of akamadar (Calotropis gigantea)"
+  },
+  {
+    "id": 9,
+    "disease": "Endoparasites (Intestinal worms)",
+    "animal": "goat",
+    "symptoms": "Animals emaciated, thick body hairs, foul smelling stools with worms",
+    "treatment": "Neem, Nirgundi, Gheekumari, Sangkupi, Akamdar (Aak). They are to be taken at 1 kg each. All are to be ground well by sprinkling little water and filtered, obtaining 4 litres of herbal mixture. Then 30 ml of the extract is taken and administered for one adult sheep or goat. For younger sheep or goat less than 3 months old, 10 ml has to be administered orally. For adult cattle 100 ml has to be administered. This can be stored for more than one month. The dewormer arrests loose motion, results in solid dung free from obnoxious odor, increases grazing efficiency, and promotes health.",
+    "ingredients": "Leaves of nirgundi (Vitex negundo), Leaf petals of khorpad (Aloe vera), Neem seeds, Leaves of sangkupi (Clerodendrum inerme), Leaves of akamadar (Calotropis gigantea)"
+  },
+  {
+    "id": 10,
+    "disease": "Ectoparasites (Lice, ticks, mites)",
+    "animal": "cow",
+    "symptoms": "Presence of parasites visible all over the body, animal emaciated, dull and death in severe cases",
+    "treatment": "1. Lahsun (Garlic), Tulsi, neem leaves, haldi (turmeric), seethapal seeds each 10-20 gm are ground together and boiled in 250 ml of neem oil and applied over the surface of the body of large animal.\n2. Whole plant of Raimuniya (Lantana camara) is chopped and crushed and diluted with the urine of cattle for 3 days and applied externally.\n3. Boil tobacco leaves and stalk 250 gm in 2 lit. of water and add 5 lit. of water and spray over the body of 10-20 animals.",
+    "ingredients": "Lahsun (Garlic), Tulsi, neem leaves, haldi (turmeric), seethapal seeds, Raimuniya (Lantana camara), Tobacco"
+  },
+  {
+    "id": 11,
+    "disease": "Ectoparasites (Lice, ticks, mites)",
+    "animal": "goat",
+    "symptoms": "Presence of parasites visible all over the body, animal emaciated, dull and death in severe cases",
+    "treatment": "1. Lahsun (Garlic), Tulsi, neem leaves, haldi (turmeric), seethapal seeds each 10-20 gm are ground together and boiled in 250 ml of neem oil and applied over the surface of the body of large animal.\n2. Whole plant of Raimuniya (Lantana camara) is chopped and crushed and diluted with the urine of cattle for 3 days and applied externally.\n3. Boil tobacco leaves and stalk 250 gm in 2 lit. of water and add 5 lit. of water and spray over the body of 10-20 animals.",
+    "ingredients": "Lahsun (Garlic), Tulsi, neem leaves, haldi (turmeric), seethapal seeds, Raimuniya (Lantana camara), Tobacco"
+  },
+  {
+    "id": 12,
+    "disease": "Respiratory tract Infections",
+    "animal": "cow",
+    "symptoms": "Heavy snoring, difficulty in breathing",
+    "treatment": "1. Take leaves of Tulsi (Ocimum sanctum) 100 gm, leaves of arusha (Adhatoda vasica) 100 gm, ginger 50 gm, pepper 10 gm, jaggery 100 gm and boil in 1 lit. of water and administer 100-250 ml of the decoction 2-3 times daily.\n2. Few fruits (6-8 number) of kantakari / kateli (Solanum surattense) are crushed and soaked in goat urine overnight, filtered, and a few drops squeezed into the nostrils (maximum 6 drops).",
+    "ingredients": "Tulsi (Ocimum sanctum), Arusha (Adhatoda vasica), ginger, pepper, jaggery, Kantakari / kateli (Solanum surattense)"
+  },
+  {
+    "id": 13,
+    "disease": "Respiratory tract Infections",
+    "animal": "goat",
+    "symptoms": "Heavy snoring, difficulty in breathing",
+    "treatment": "1. Take leaves of Tulsi (Ocimum sanctum) 100 gm, leaves of arusha (Adhatoda vasica) 100 gm, ginger 50 gm, pepper 10 gm, jaggery 100 gm and boil in 1 lit. of water and administer 100-250 ml of the decoction 2-3 times daily.\n2. Few fruits (6-8 number) of kantakari / kateli (Solanum surattense) are crushed and soaked in goat urine overnight, filtered, and a few drops squeezed into the nostrils (maximum 6 drops).",
+    "ingredients": "Tulsi (Ocimum sanctum), Arusha (Adhatoda vasica), ginger, pepper, jaggery, Kantakari / kateli (Solanum surattense)"
+  },
+  {
+    "id": 14,
+    "disease": "Animal Fever",
+    "animal": "cow",
+    "symptoms": "Shivering of the body and limbs, erect hairs, watery eyes, recumbent and unable to get up, off feed and water, reduction in the milk yield",
+    "treatment": "1. Take a mud pot, put a few charcoal or wooden pieces, burn them for a few minutes and put off the fire. Add neem seeds 200 gm in the mud pot to produce smoke. Direct the smoke towards the head of the animal to inhale.\n2. Ajwain, haldi (jungli haldi), garlic, pepper 5 gm each taken, ground together and diluted in hot water, administered orally twice a day.\n3. Feed the animal with rice or bajra porridge by boiling in water with broken grains (500 gm).\n4. Provide drinking water after boiling and cooling. Feed only dried hay or straw and avoid green fodder.",
+    "ingredients": "charcoal or wooden pieces, neem seeds 200 gm, Ajwain, haldi (jungli haldi), garlic, pepper 5 gm, rice or bajra"
+  },
+  {
+    "id": 15,
+    "disease": "Animal Fever",
+    "animal": "goat",
+    "symptoms": "Shivering of the body and limbs, erect hairs, watery eyes, recumbent and unable to get up, off feed and water, reduction in the milk yield",
+    "treatment": "1. Take a mud pot, put a few charcoal or wooden pieces, burn them for a few minutes and put off the fire. Add neem seeds 200 gm in the mud pot to produce smoke. Direct the smoke towards the head of the animal to inhale.\n2. Ajwain, haldi (jungli haldi), garlic, pepper 5 gm each taken, ground together and diluted in hot water, administered orally twice a day.\n3. Feed the animal with rice or bajra porridge by boiling in water with broken grains (500 gm).\n4. Provide drinking water after boiling and cooling. Feed only dried hay or straw and avoid green fodder.",
+    "ingredients": "charcoal or wooden pieces, neem seeds 200 gm, Ajwain, haldi (jungli haldi), garlic, pepper 5 gm, rice or bajra"
+  },
+  {
+    "id": 16,
+    "disease": "Foot and Mouth Disease",
+    "animal": "cow",
+    "symptoms": "Ulcers in mouth and cleft of hooves, drooping saliva and difficult to walk",
+    "treatment": "1. Haldi (Turmeric) 200 gm (freshly harvested rhizome preferred), coconut kernel extract (from 1 coconut), gheekumari (Aloe vera) 200 gm, palm jaggery 200 gm, common salt 100 gm, garlic 100 gm, pepper 50 gm, cumin 50 gm, fenugreek 50 gm.\n2. Ground turmeric, gheekumari, garlic, and grated coconut with sufficient water in a vessel. Powder pepper, cumin, fenugreek. Mix all ingredients thoroughly with water to make about 1 liter. Filter and administer orally.\nDose: 100 ml at a time for adult animals or 50 ml for young ones or sheep/goats. Before treatment, feed animals with 2 bananas soaked in 50 ml sesame oil (Til ka tel). Continue for 3 days.",
+    "ingredients": "Haldi (Turmeric) 200 gm, coconut kernel extract (from 1 coconut), gheekumari (Aloe vera) 200 gm, palm jaggery 200 gm, common salt 100 gm, garlic 100 gm, pepper 50 gm, cumin 50 gm, fenugreek 50 gm, bananas, sesame oil"
+  },
+  {
+    "id": 17,
+    "disease": "Foot and Mouth Disease",
+    "animal": "goat",
+    "symptoms": "Ulcers in mouth and cleft of hooves, drooping saliva and difficult to walk",
+    "treatment": "1. Haldi (Turmeric) 200 gm (freshly harvested rhizome preferred), coconut kernel extract (from 1 coconut), gheekumari (Aloe vera) 200 gm, palm jaggery 200 gm, common salt 100 gm, garlic 100 gm, pepper 50 gm, cumin 50 gm, fenugreek 50 gm.\n2. Ground turmeric, gheekumari, garlic, and grated coconut with sufficient water in a vessel. Powder pepper, cumin, fenugreek. Mix all ingredients thoroughly with water to make about 1 liter. Filter and administer orally.\nDose: 100 ml at a time for adult animals or 50 ml for young ones or sheep/goats. Before treatment, feed animals with 2 bananas soaked in 50 ml sesame oil (Til ka tel). Continue for 3 days.",
+    "ingredients": "Haldi (Turmeric) 200 gm, coconut kernel extract (from 1 coconut), gheekumari (Aloe vera) 200 gm, palm jaggery 200 gm, common salt 100 gm, garlic 100 gm, pepper 50 gm, cumin 50 gm, fenugreek 50 gm, bananas, sesame oil"
+  },
+  {
+    "id": 18,
+    "disease": "Mastitis in Dairy animals",
+    "animal": "cow",
+    "symptoms": "swollen, hot udder, milk discoloured with pus and thread like substance",
+    "treatment": "(1) Gheekumari (Aloe vera) 2-3 petals, (2) Haldi (Turmeric) powder 50 gm, (3) Chunna (Lime powder) 10 gm. Grind all ingredients into a paste and apply over the udder thrice a day for 3-7 days depending upon severity. Before applying, wash udder and teats with boiled water 3 times daily for 5 days. Administer orally 50 gm of baking soda (sodium bicarbonate) in the juice of lemon (4 fruits) dissolved in 200 ml of water.",
+    "ingredients": "Haldi (Turmeric) powder 50 gm, Gheekumari (Aloe vera) 2-3 petals, Chunna (Lime powder) 10 gm, lemon juice (4 fruits), baking soda (sodium bicarbonate) 50 gm"
+  },
+  {
+    "id": 19,
+    "disease": "Mastitis in Dairy animals",
+    "animal": "goat",
+    "symptoms": "swollen, hot udder, milk discoloured with pus and thread like substance",
+    "treatment": "(1) Gheekumari (Aloe vera) 2-3 petals, (2) Haldi (Turmeric) powder 50 gm, (3) Chunna (Lime powder) 10 gm. Grind all ingredients into a paste and apply over the udder thrice a day for 3-7 days depending upon severity. Before applying, wash udder and teats with boiled water 3 times daily for 5 days. Administer orally 50 gm of baking soda (sodium bicarbonate) in the juice of lemon (4 fruits) dissolved in 200 ml of water.",
+    "ingredients": "Haldi (Turmeric) powder 50 gm, Gheekumari (Aloe vera) 2-3 petals, Chunna (Lime powder) 10 gm, lemon juice (4 fruits), baking soda (sodium bicarbonate) 50 gm"
+  },
+  {
+    "id": 20,
+    "disease": "Infertility",
+    "animal": "cow",
+    "symptoms": "Irregular estrus cycle, failure to conceive, repeat breeding",
+    "treatment": "Administer orally Gheekumari (Aloe vera) 1-2 petals for 3 days on an empty stomach. Administer orally sprouted chana dal (Bengal gram) or sprouted bajra or sprouted wheat 200 gm daily for 15 days. When signs of oestrus cycle are noticed, administer orally neem oil 100-150 ml before taking animal for insemination or natural crossing (insemination within 24 hours of noticing symptom). After insemination, feed animals with curry leaves (about 2 handfuls daily) for a week.",
+    "ingredients": "Gheekumari (Aloe vera) 1-2 petals, sprouted chana dal / bajra / wheat 200 gm, neem oil 100-150 ml, curry leaves"
+  },
+  {
+    "id": 21,
+    "disease": "Infertility",
+    "animal": "goat",
+    "symptoms": "Irregular estrus cycle, failure to conceive, repeat breeding",
+    "treatment": "Administer orally Gheekumari (Aloe vera) 1-2 petals for 3 days on an empty stomach. Administer orally sprouted chana dal (Bengal gram) or sprouted bajra or sprouted wheat 200 gm daily for 15 days. When signs of oestrus cycle are noticed, administer orally neem oil 100-150 ml before taking animal for insemination or natural crossing (insemination within 24 hours of noticing symptom). After insemination, feed animals with curry leaves (about 2 handfuls daily) for a week.",
+    "ingredients": "Gheekumari (Aloe vera) 1-2 petals, sprouted chana dal / bajra / wheat 200 gm, neem oil 100-150 ml, curry leaves"
+  },
+  {
+    "id": 22,
+    "disease": "Retention of Placenta",
+    "animal": "cow",
+    "symptoms": "Non-shedding of placenta after calving",
+    "treatment": "1. Lady's finger (bhendi) pods 1 kg ground well in mixer, juice diluted in water and administered orally twice a day.\n2. Sesame seeds 100 gm and jaggery 100 gm pounded together into a bolus and administered orally. OR\n3. Take Bada goksur (Pedalium murex) plant about 200 gm, pound and soak in 1000 ml water, stir well and drench.",
+    "ingredients": "Bhindi (lady's finger) pods 1 kg, Sesame seeds 100 gm, Jaggery 100 gm, Bada goksur (Pedalium murex) plant 200 gm"
+  },
+  {
+    "id": 23,
+    "disease": "Prolapse of the Uterus",
+    "animal": "cow",
+    "symptoms": "Uterine protrusion / prolapse after calving",
+    "treatment": "Clean the mass with potassium permanganate solution (1 ml in 1 lit water) and sprinkle Epsom salt or sugar over it. Lift the mass using a banana leaf with both hands (exercise special care to avoid laceration or nail tearing; wash hands in antiseptic lotion). Lifting allows the filled urinary bladder to empty and the mass to re-enter easily. Leaves of touch-me-not / Chhui-Mui (Mimosa pudica) whole plant two handfuls ground well and mixed with 200 ml goat or cow milk to be administered orally 3 times (morning, evening, and next day morning). Keep the animal in a slightly slanting position with head lower for at least a week.",
+    "ingredients": "Potassium permanganate solution, Epsom salt or sugar, banana leaf, touch-me-not / Chhui-Mui (Mimosa pudica), milk 200 ml"
+  },
+  {
+    "id": 24,
+    "disease": "Blue Tongue Disease",
+    "animal": "sheeps and goats",
+    "symptoms": "virus, mosquitoes, insects act as vectors, animal off feed, swollen cyanotic tongue, fever",
+    "treatment": "Since the animal is not taking feed, starvation may lead to death. Administer recipe:\ni. Banana fruits smeared with sesame oil fed 2-3 times (0.5 liter sesame oil with 20 bananas is sufficient for 20 sheep). This aids immediate recovery.\nii. Administer leaf pulp of Aloe vera (100 gm) daily until full recovery. Aloe vera also increases body weight and acts as a dewormer against intestinal parasites. Can also be given monthly as preventive during rainy season.",
+    "ingredients": "Banana fruits, sesame oil, leaf pulp of Aloe vera (100 gm)"
+  },
+  {
+    "id": 25,
+    "disease": "Poisonous bite or Food poisoning",
+    "animal": "cow",
+    "symptoms": "Swollen eyelids, hypothermia, body surface chilled, discolouration of the skin or coat, sweating and rashes on the body",
+    "treatment": "Leaves of betelvine, tulsi, pepper, and dried ginger (sontha) each 10 gm pounded together, mixed in warm water, and administered orally.",
+    "ingredients": "Betelvine (Paan), Tulsi, pepper, dried ginger (Sontha)"
+  },
+  {
+    "id": 26,
+    "disease": "Poisonous bite or Food poisoning",
+    "animal": "goat",
+    "symptoms": "Swollen eyelids, hypothermia, body surface chilled, discolouration of the skin or coat, sweating and rashes on the body",
+    "treatment": "Leaves of betelvine, tulsi, pepper, and dried ginger (sontha) each 10 gm pounded together, mixed in warm water, and administered orally.",
+    "ingredients": "Betelvine (Paan), Tulsi, pepper, dried ginger (Sontha)"
+  },
+  {
+    "id": 27,
+    "disease": "Eye Injuries",
+    "animal": "cow",
+    "symptoms": "Tearing, corneal opacity, redness, inflammation or mechanical injury to eye",
+    "treatment": "Leaves of bimba (Coccinia grandis) or tender leaves of castor (Ricinus communis / arandi) crushed by mixing with a pinch of salt. Apply 2 drops of the juice directly into the eyes for 2 days.",
+    "ingredients": "Bimba (Coccinia grandis), Castor leaves (Ricinus communis / Arandi), salt"
+  },
+  {
+    "id": 28,
+    "disease": "Eye Injuries",
+    "animal": "goat",
+    "symptoms": "Tearing, corneal opacity, redness, inflammation or mechanical injury to eye",
+    "treatment": "Leaves of bimba (Coccinia grandis) or tender leaves of castor (Ricinus communis / arandi) crushed by mixing with a pinch of salt. Apply 2 drops of the juice directly into the eyes for 2 days.",
+    "ingredients": "Bimba (Coccinia grandis), Castor leaves (Ricinus communis / Arandi), salt"
+  },
+  {
+    "id": 29,
+    "disease": "Wounds",
+    "animal": "cow",
+    "symptoms": "Cuts, bruises, septic wounds, maggot wounds",
+    "treatment": "Prepare special thaila (oil) and apply over the wound: Coconut oil 250 ml and Datura leaf extract 250 ml boiled together in a vessel for about one hour until oily texture forms. Put off the fire and add copper sulphate (tuutiya) 2.5 gm and stir well. Store in a bottle and apply to all types of wounds including maggot wounds in animals.",
+    "ingredients": "Coconut oil 250 ml, Datura leaf extract 250 ml, copper sulphate (tuutiya) 2.5 gm, Aloe vera (Gheekumari)"
+  },
+  {
+    "id": 30,
+    "disease": "Wounds",
+    "animal": "goat",
+    "symptoms": "Cuts, bruises, septic wounds, maggot wounds",
+    "treatment": "Prepare special thaila (oil) and apply over the wound: Coconut oil 250 ml and Datura leaf extract 250 ml boiled together in a vessel for about one hour until oily texture forms. Put off the fire and add copper sulphate (tuutiya) 2.5 gm and stir well. Store in a bottle and apply to all types of wounds including maggot wounds in animals.",
+    "ingredients": "Coconut oil 250 ml, Datura leaf extract 250 ml, copper sulphate (tuutiya) 2.5 gm, Aloe vera (Gheekumari)"
+  },
+  {
+    "id": 31,
+    "disease": "Calf Scour",
+    "animal": "calf of cattle and buffaloes",
+    "symptoms": "Loose motion with foul smell and fever, dull inactive with sunken eyes, temperature rises to 104 F",
+    "treatment": "Sontha (Zingiber officinale / dried ginger) 50 gm and tender guava leaves (Psidium guajava) 200 gm ground and made into a bolus. Administer orally one or two times.",
+    "ingredients": "Sontha (Zingiber officinale), guava (Psidium guajava / amrud / jamphal) tender leaves 200 gm"
+  },
+  {
+    "id": 32,
+    "disease": "Calf Scour",
+    "animal": "cow",
+    "symptoms": "Loose motion with foul smell and fever in young calves, dehydration, sunken eyes",
+    "treatment": "Sontha (Zingiber officinale) 50 gm, guava (Psidium guajava) tender leaves 200 gm ground and made into a bolus. Administer orally one or two times.",
+    "ingredients": "Sontha (Zingiber officinale), guava (Psidium guajava / amrud) tender leaves"
+  },
+  {
+    "id": 33,
+    "disease": "Calf Scour",
+    "animal": "goat",
+    "symptoms": "Diarrhea and scours in kid/lamb, fever, lethargy",
+    "treatment": "Sontha (Zingiber officinale) 50 gm, guava (Psidium guajava) tender leaves 200 gm ground and made into a bolus. Administer orally one or two times.",
+    "ingredients": "Sontha (Zingiber officinale), guava (Psidium guajava / amrud) tender leaves"
+  },
+  {
+    "id": 34,
+    "disease": "Panchagavya for Animal Health (infertility or repeat breeding)",
+    "animal": "poultry",
+    "symptoms": "General debility, low immunity, small egg size, poor growth",
+    "treatment": "Mix 5 products of cow: 1 kg cow dung, 1 lit cow urine, 1 lit milk, 1 lit curd, 100 gm ghee. Add 2 bananas and 1 lit sugarcane juice or 500 gm jaggery in a plastic barrel; ferment for 1 week. For poultry birds, mix about 50 ml of Panchagavya with feed for a dozen birds. Fed birds lay bigger eggs and grow faster.",
+    "ingredients": "Cow dung 1 kg, cow urine 1 lit, milk 1 lit, curd 1 lit, ghee 100 gm, bananas (2), jaggery (500 gm) or sugarcane juice"
+  },
+  {
+    "id": 35,
+    "disease": "Panchagavya for Animal Health (infertility or repeat breeding)",
+    "animal": "dog",
+    "symptoms": "Skin disease, oozing of body fluid from the skin, poor vitality",
+    "treatment": "Mix 5 products of cow (dung 1 kg, urine 1 lit, milk 1 lit, curd 1 lit, ghee 100 gm) plus 2 bananas and 500 gm jaggery; ferment for 1 week. For dogs affected with skin disease (fluid oozing), administer 100 ml Panchagavya continuously for 3 days.",
+    "ingredients": "Cow dung, cow urine, cow milk, curd, ghee, bananas, jaggery"
+  },
+  {
+    "id": 36,
+    "disease": "Panchagavya for Animal Health (infertility or repeat breeding)",
+    "animal": "cow",
+    "symptoms": "Infertility, repeat breeding, unthriftiness, low milk yield",
+    "treatment": "Mix 5 products of cow (1 kg cow dung, 1 lit cow urine, 1 lit milk, 1 lit curd, 100 gm ghee) with 2 bananas and 500 gm jaggery; ferment in barrel for 1 week. Administer 200 ml to 300 ml monthly once for general upkeep and reproductive vigor of cattle (or 100 ml for sheep/goat).",
+    "ingredients": "Cow dung 1 kg, cow urine 1 lit, milk 1 lit, curd 1 lit, ghee 100 gm, bananas 2, jaggery 500 gm"
+  },
+  {
+    "id": 37,
+    "disease": "Milk fever or Calcium Deficiency",
+    "animal": "cow",
+    "symptoms": "Lethargy, muscular tremors, recumbency, unable to stand, post-calving paralysis",
+    "treatment": "Put 1 kg lime stone (Calcium hydroxide) in a mud pot with 20 liters of water overnight. Take 500 ml of supernatant water (top clear layer) and feed daily mixed with drinking water. Replace removed water with 500 ml fresh water each time. Every 20 days replace the limestone and water entirely. Prevents and treats calcium deficiency.",
+    "ingredients": "Limestone (Calcium hydroxide) 1 kg, supernatant clear water"
+  },
+  {
+    "id": 38,
+    "disease": "Milk fever or Calcium Deficiency",
+    "animal": "goat",
+    "symptoms": "Hypocalcemia, trembling, weakness in hindquarters, inability to stand after kidding",
+    "treatment": "Put 1 kg lime stone (Calcium hydroxide) in a mud pot with 20 liters of water overnight. Take 200-500 ml of supernatant water (top clear layer) and feed daily mixed with drinking water. Replace removed water with equal fresh water. Every 20 days replace limestone and water completely.",
+    "ingredients": "Limestone (Calcium hydroxide) 1 kg, supernatant water"
+  },
+  {
+    "id": 39,
+    "disease": "Ranikhet disease",
+    "animal": "poultry birds",
+    "symptoms": "Respiratory distress, greenish diarrhea, twisting of neck, paralysis, sudden mortality",
+    "treatment": "Leaves of utarn (Pergularia daemia) 20 gm, leaves of kirayat (Andrographis paniculata) 20 gm, fresh haldi (turmeric / Curcuma longa) 20 gm, garlic 20 gm, and onion 20 gm chopped together and fed with poultry feed as preventive or curative treatment.",
+    "ingredients": "Leaves of utarn (Pergularia daemia) 20 gm, kirayat (Andrographis paniculata) 20 gm, fresh turmeric 20 gm, garlic 20 gm, onion 20 gm"
+  },
+  {
+    "id": 40,
+    "disease": "Lice Infestation of Poultry",
+    "animal": "poultry birds",
+    "symptoms": "Lice visible on feathers and skin, feather loss, restlessness, skin irritation",
+    "treatment": "1. Spread crushed leaves of sithapal (custard apple / Annona squamosa) or Aak (Calotropis) inside poultry nests; lice gather on leaves and can be disposed of hygienically.\n2. Garlic, Tulsi, neem leaves, seethapal seeds, haldi (turmeric) each 10-20 gm ground together, boiled in 250 ml neem oil, and applied over the body of 10-15 birds.\n3. Spraying water in the nest also helps wash away lice.",
+    "ingredients": "Leaves of sithapal (Annona squamosa), Aak (Calotropis), Garlic, Tulsi, neem leaves, seethapal seeds, turmeric, neem oil"
+  },
+  {
+    "id": 41,
+    "disease": "Fowl Pox",
+    "animal": "poultry birds",
+    "symptoms": "Wart-like nodules/lesions on comb, wattles, eyelids, and unfeathered skin",
+    "treatment": "1. Garlic 10 bulblets, turmeric powder 10 gm, tulsi leaves 50 gm, camphor 5 gm, neem leaves 50 gm, cumin 20 gm pounded well and mixed with castor oil or neem oil. Heat and apply over lesions.\n2. Mix 50 gm of herbal masala bolus in poultry feed for 10 birds.",
+    "ingredients": "Garlic (Lahsun) 10 bulblets, turmeric (Haldi) 10 gm, Tulsi 50 gm, Camphor (Kapoor) 5 gm, neem leaves 50 gm, cumin (Jeera) 20 gm, castor or neem oil"
+  },
+  {
+    "id": 42,
+    "disease": "Lice",
+    "animal": "goat, cow, chickens",
+    "symptoms": "Small white lice lay eggs on feathers/skin; lice moving on hair and skin; reduced egg production; slower weight gain; constant pecking or scratching with beak/horns",
+    "treatment": "Take garlic 5 gm and ginger 5 gm, grind together and mix in drinking water. Administer once a day for 3 days. Sufficient for 10 chickens or small animals.",
+    "ingredients": "Garlic 5 gm, ginger 5 gm"
+  },
+  {
+    "id": 43,
+    "disease": "Mycotoxicosis",
+    "animal": "Chickens, Ducks, Turkeys, Cattle, Pigs, Sheep, Goats, Horses",
+    "symptoms": "Caused by fungal toxin (Aspergillus) in moist peanuts/corn; stunted growth, reduced weight gain, liver enlarged with blood streaks and spots, fluid in abdomen, enteritis",
+    "treatment": "Avoid moldy or spoiled peanut meal or corn in feed. Feed leafy greens like Amaranthus, Bhringaraj (Eclipta prostrata), and Bhui aonla (Phyllanthus niruri). Reduce protein and fat in feed during illness, returning to normal diet once liver recovers. Prevent moldy feed especially during rainy season.",
+    "ingredients": "Amaranthus, Bhringaraj (Eclipta prostrata), Bhui aonla (Phyllanthus niruri)"
+  },
+  {
+    "id": 44,
+    "disease": "chicken wounds",
+    "animal": "Chickens, Ducks, Turkeys, Cattle, Pigs, Sheep, Goats, Horses",
+    "symptoms": "Wounds due to fighting, pecking each other, or sharp object injuries",
+    "treatment": "1. Grind fresh turmeric rhizome and a clove of garlic together, mix with coconut oil, and apply paste to the wound.\n2. Or grind pulp of Aloe vera with turmeric powder and apply to wound until healed.",
+    "ingredients": "Fresh turmeric rhizome, garlic clove, coconut oil, Aloe vera pulp, turmeric powder"
+  },
+  {
+    "id": 45,
+    "disease": "Panchakavya (infertility or repeat breeding)",
+    "animal": "Chickens",
+    "symptoms": "Low fertility, unthrifty birds, egg laying problems",
+    "treatment": "Prepared using 5 cow products: 100 gm cow dung, 100 ml cow urine, 100 ml cow milk, 100 ml cow curd, 10 gm ghee. Add 1 banana and 100 gm jaggery in a plastic container. Ferment for 3 days. Store covered with muslin cloth under shade. Mix in feed for chickens.",
+    "ingredients": "100 gm cow dung, 100 ml cow urine, 100 ml cow milk, 100 ml cow curd, 10 gm ghee, 1 banana, 100 gm jaggery"
+  },
+  {
+    "id": 46,
+    "disease": "Maggot infested Wounds",
+    "animal": "Chickens, Ducks, Turkeys, Cattle, Pigs, Sheep, Goats, Horses",
+    "symptoms": "Burst lumps forming wounds, maggots visible inside wounds, necrotic tissue from mechanical injury or fighting",
+    "treatment": "1. Take a handful each of Patharchatta (Elytraria acaulis), Nirgundi (Vitex negundo), and neem leaves. Grind to extract 100 ml juice, add to 100 ml neem oil and boil. Store in bottle. Apply 3 drops to wounds twice a day.\n2. Or grind 25 gm leaves of Safed Aak (Datura metel) and Tulsi (Ocimum sanctum), add 5 gm slaked lime and 0.5 tsp turmeric powder into paste; apply covering wound thoroughly.\nInternal: Administer 15 gm Ashta Choornam internally.",
+    "ingredients": "Patharchatta (Elytraria acaulis), Nirgundi (Vitex negundo), neem leaves, neem oil, Safed Aak (Datura metel), Tulsi, slaked lime, turmeric powder, Ashta Choornam"
+  },
+  {
+    "id": 47,
+    "disease": "Fracture and broken leg",
+    "animal": "Chickens, Ducks, Turkeys, Cattle, Pigs, Sheep, Goats, Horses",
+    "symptoms": "Fractures of the bone due to accidents, sudden fall, or animal aggression, limb hanging, inability to bear weight",
+    "treatment": "External medicine: Black gram 200 gm powdered, mixed with 3 egg whites of country chicken into paste. Apply on wounded/fractured area, position bamboo splints around affected bone, and tie with cotton cloth. Pour 100 ml sesame oil on outer cloth. After 15 days remove and re-apply.\nInternal medicine: Tender leaves and primordial region of Asthibhanga (Cissus quadrangularis / Pirandai) and rhizome of Ashwagandha (Withania somnifera) 10 gm each ground well, mixed with 300 ml milk and administered orally.",
+    "ingredients": "Black gram 200 gm, 3 country chicken egg whites, sesame oil 100 ml, Asthibhanga (Cissus quadrangularis / Pirandai) 10 gm, Ashwagandha (Withania somnifera) 10 gm, milk 300 ml"
+  },
+  {
+    "id": 48,
+    "disease": "To Increase Milk",
+    "animal": "cow, goat",
+    "symptoms": "Low milk yield, lactation insufficiency",
+    "treatment": "Bottle gourd or white pumpkin 100 gm, grated coconut 100 gm, black gram 100 gm, jaggery 100 gm. Black gram is soaked overnight, then ground with coconut, chopped bottle gourd/pumpkin, and jaggery into a paste. Feed to animal once a day for 2-5 days.",
+    "ingredients": "Bottle gourd / white Pumpkin 100 gm, grated coconut 100 gm, Black gram 100 gm, Jaggery 100 gm"
+  },
+  {
+    "id": 49,
+    "disease": "Fracture of horn",
+    "animal": "cow, bullock, buffalo",
+    "symptoms": "Broken horn, horn bleeding, horn detachment from trauma or fighting",
+    "treatment": "1. Apply sugar over bleeding affected area.\n2. Grind kanphuli (Tridax procumbens) and turmeric powder mixed in coconut oil.\n3. Dip cotton cloth in latex of banyan tree or cactus Spiral spurge (Euphorbia tortilis) paste and wrap firmly around horn.\n4. Apply Mathaan thaila / antiseptic ointment on affected area.",
+    "ingredients": "Sugar, kanphuli (Tridax procumbens), turmeric powder, coconut oil, banyan tree / Euphorbia tortilis latex, Mathaan thaila"
+  },
+  {
+    "id": 50,
+    "disease": "Cow unable to stand up or falling suddenly",
+    "animal": "cow, cattle",
+    "symptoms": "Head hangs down, cow exhausted with trembling legs, legs bending, unable to bear weight (forefoot affected first), twitched eyes, eating soil (pica / mineral deficiency)",
+    "treatment": "Place a handful of rock salt on the animal's tongue. Administer 3 eggs of country chicken orally once a day for two days. Grind a handful each of curry leaves (Murraya koenigii), pirandai (Cissus quadrangularis), drumstick leaves (Moringa oleifera), agathi keerai (Sesbania grandiflora), thaluthalai (Clerodendrum phlomides), and 200 gm coconut inflorescence together. Mix with 0.5 liter coconut milk and administer orally.",
+    "ingredients": "Rock salt, 3 country chicken eggs, curry leaves (Murraya koenigii), pirandai (Cissus quadrangularis), drumstick leaves (Moringa oleifera), agathi keerai (Sesbania grandiflora), thaluthalai (Clerodendrum phlomides), coconut inflorescence 200 gm, coconut milk 500 ml"
+  }
+]
+

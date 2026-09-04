@@ -1,0 +1,58 @@
+﻿## =========================================================================
+## .NET / Visual Studio
+## =========================================================================
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
+*.userprefs
+*.DotSettings.user
+appsettings.Development.json
+appsettings.*.local.json
+
+## =========================================================================
+## Node / Frontend (Ethnovet.UI)
+## =========================================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+dist/
+dist-ssr/
+*.local
+.env
+.env.local
+.env.*.local
+
+## =========================================================================
+## Playwright & Testing Artifacts
+## =========================================================================
+.playwright-mcp/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+test_output*.png
+screenshot_*.png
+test_*.png
+*.log
+
+## =========================================================================
+## OS & Editors
+## =========================================================================
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json

@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="EthnovetChat.DataAccessLayer/EthnovetChat.DataAccessLayer.csproj" />
+  <Project Path="EthnovetChat.ServiceLayer/EthnovetChat.ServiceLayer.csproj" />
+</Solution>
