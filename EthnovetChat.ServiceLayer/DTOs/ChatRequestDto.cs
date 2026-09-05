@@ -21,5 +21,10 @@ namespace EthnovetChat.ServiceLayer.DTOs
         /// Optional session identifier for conversational continuity
         /// </summary>
         public string? SessionId { get; set; }
+
+        /// <summary>
+        /// Optional authenticated farmer user ID
+        /// </summary>
+        public Guid? UserId { get; set; }
     }
 }

@@ -5,12 +5,17 @@ import { MessageItem } from './components/MessageItem';
 import { ChatInput } from './components/ChatInput';
 import { AdminLoginModal } from './components/Admin/AdminLoginModal';
 import { AdminPortal } from './components/Admin/AdminPortal';
-import type { ChatMessage } from './types';
-import { Sparkles, AlertCircle } from 'lucide-react';
+import { RegisterWizard } from './components/Auth/RegisterWizard';
+import { LoginModal } from './components/Auth/LoginModal';
+import { ChatHistoryDrawer } from './components/ChatHistoryDrawer';
+import type { ChatMessage, User as UserType, Remedy } from './types';
+import { Sparkles, AlertCircle, BookmarkPlus } from 'lucide-react';
 
 const SESSION_KEY = 'ethnovet_chat_session_id';
 const THEME_KEY = 'ethnovet_theme';
 const ADMIN_TOKEN_KEY = 'ethnovet_admin_token';
+const USER_TOKEN_KEY = 'ethnovet_user_token';
+const USER_DATA_KEY = 'ethnovet_user_data';
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
 
 const getInitialGreeting = (lang: 'en' | 'ta'): ChatMessage => {
@@ -70,7 +75,25 @@ export const App: React.FC = () => {
     return typeof sessionStorage !== 'undefined' ? sessionStorage.getItem(ADMIN_TOKEN_KEY) : null;
   });
   const [isAdminPortalOpen, setIsAdminPortalOpen] = useState<boolean>(false);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
+  const [isAdminLoginModalOpen, setIsAdminLoginModalOpen] = useState<boolean>(false);
+
+  // User Authentication State
+  const [currentUser, setCurrentUser] = useState<UserType | null>(() => {
+    try {
+      const saved = localStorage.getItem(USER_DATA_KEY);
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const [userToken, setUserToken] = useState<string | null>(() => {
+    return typeof localStorage !== 'undefined' ? localStorage.getItem(USER_TOKEN_KEY) : null;
+  });
+
+  const [isRegisterOpen, setIsRegisterOpen] = useState<boolean>(false);
+  const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState<boolean>(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -84,7 +107,13 @@ export const App: React.FC = () => {
     localStorage.setItem(THEME_KEY, theme);
   }, [theme]);
 
-  // Toggle theme
+  // Set user language preference if logged in on load
+  useEffect(() => {
+    if (currentUser?.preferredLanguage) {
+      setLanguage(currentUser.preferredLanguage);
+    }
+  }, []);
+
   const handleToggleTheme = () => {
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
   };
@@ -100,14 +129,31 @@ export const App: React.FC = () => {
       localStorage.setItem(SESSION_KEY, currentSession);
     }
     setSessionId(currentSession);
-    setMessages([getInitialGreeting(language)]);
+    setMessages([getInitialGreeting(currentUser?.preferredLanguage || language)]);
   }, []);
 
-  // Update greeting if language changes when only greeting exists
+  // Update language and sync with backend if user is logged in
   const handleLanguageChange = (newLang: 'en' | 'ta') => {
     setLanguage(newLang);
     if (messages.length <= 1) {
       setMessages([getInitialGreeting(newLang)]);
+    }
+
+    if (userToken) {
+      fetch(`${API_BASE}/api/auth/language`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userToken}`,
+        },
+        body: JSON.stringify({ language: newLang }),
+      }).catch((e) => console.warn('Language sync error:', e));
+
+      if (currentUser) {
+        const updated = { ...currentUser, preferredLanguage: newLang };
+        setCurrentUser(updated);
+        localStorage.setItem(USER_DATA_KEY, JSON.stringify(updated));
+      }
     }
   };
 
@@ -145,11 +191,16 @@ export const App: React.FC = () => {
     setIsLoading(true);
 
     try {
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+      if (userToken) {
+        headers['Authorization'] = `Bearer ${userToken}`;
+      }
+
       const response = await fetch(`${API_BASE}/api/chat/stream`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: headers,
         body: JSON.stringify({
           message: text,
           animal: selectedAnimal || undefined,
@@ -259,16 +310,80 @@ export const App: React.FC = () => {
     }
   };
 
+  // Load a historical consultation from PostgreSQL
+  const handleSelectHistoricalSession = async (targetSessionId: string) => {
+    if (!userToken) return;
+
+    try {
+      setIsLoading(true);
+      const res = await fetch(`${API_BASE}/api/chat/user-sessions/${targetSessionId}`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+
+      if (!res.ok) throw new Error('Could not load consultation');
+      const detail = await res.json();
+
+      setSessionId(detail.sessionId);
+      localStorage.setItem(SESSION_KEY, detail.sessionId);
+      if (detail.animal) setSelectedAnimal(detail.animal);
+      if (detail.language) setLanguage(detail.language);
+
+      const loadedMessages: ChatMessage[] = detail.messages.map((m: any) => {
+        let remedies: Remedy[] = [];
+        if (m.relevantRemediesJson) {
+          try {
+            remedies = JSON.parse(m.relevantRemediesJson);
+          } catch {}
+        }
+        return {
+          id: m.id,
+          role: m.role,
+          content: m.content,
+          timestamp: m.timestamp,
+          relevantRemedies: remedies,
+          isAiGenerated: m.isAiGenerated,
+          language: detail.language,
+        };
+      });
+
+      setMessages(loadedMessages.length > 0 ? loadedMessages : [getInitialGreeting(language)]);
+    } catch (err: any) {
+      setError(err.message || 'Failed to load historical consultation.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // User Auth Handlers
+  const handleAuthSuccess = (token: string, user: UserType) => {
+    localStorage.setItem(USER_TOKEN_KEY, token);
+    localStorage.setItem(USER_DATA_KEY, JSON.stringify(user));
+    setUserToken(token);
+    setCurrentUser(user);
+    if (user.preferredLanguage) {
+      setLanguage(user.preferredLanguage);
+    }
+  };
+
+  const handleUserLogout = () => {
+    localStorage.removeItem(USER_TOKEN_KEY);
+    localStorage.removeItem(USER_DATA_KEY);
+    setUserToken(null);
+    setCurrentUser(null);
+  };
+
   // Admin Actions
   const handleOpenAdmin = () => {
     if (adminToken) {
       setIsAdminPortalOpen(true);
     } else {
-      setIsLoginModalOpen(true);
+      setIsAdminLoginModalOpen(true);
     }
   };
 
-  const handleLoginSuccess = (token: string) => {
+  const handleAdminLoginSuccess = (token: string) => {
     sessionStorage.setItem(ADMIN_TOKEN_KEY, token);
     setAdminToken(token);
     setIsAdminPortalOpen(true);
@@ -304,6 +419,13 @@ export const App: React.FC = () => {
         isAdminLoggedIn={!!adminToken}
         onNewConsultation={handleNewConsultation}
         isClearing={isClearing}
+        currentUser={currentUser}
+        onOpenAuth={(mode) => {
+          if (mode === 'register') setIsRegisterOpen(true);
+          else setIsLoginOpen(true);
+        }}
+        onOpenHistory={() => setIsHistoryOpen(true)}
+        onLogout={handleUserLogout}
       />
 
       {/* Animal Quick Filter Pill Bar */}
@@ -321,19 +443,37 @@ export const App: React.FC = () => {
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               <span className="font-medium">
-                {language === 'ta'
-                  ? 'செயலில் உள்ள அமர்வு (5 உரையாடல்கள் நினைவகம்):'
-                  : 'Active Multi-turn Session (5-turn Memory):'}
+                {currentUser ? (
+                  <span>
+                    {language === 'ta' ? 'சேமிக்கப்பட்ட அமர்வு:' : 'Saved Cloud Session:'}
+                  </span>
+                ) : (
+                  <span>
+                    {language === 'ta' ? 'தற்காலிக அமர்வு (5 நினைவகம்):' : 'Guest Session (5-turn Memory):'}
+                  </span>
+                )}
               </span>
               <code className="text-[10px] text-slate-600 dark:text-slate-300 font-mono bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded">
                 {sessionId ? sessionId.substring(0, 8) + '...' : 'initializing'}
               </code>
             </div>
-            {selectedAnimal && (
-              <span className="bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-medium px-2 py-0.5 rounded-full capitalize text-[10px]">
-                {selectedAnimal}
-              </span>
-            )}
+
+            <div className="flex items-center gap-2">
+              {!currentUser && (
+                <button
+                  onClick={() => setIsRegisterOpen(true)}
+                  className="hidden sm:inline-flex items-center gap-1 text-[10px] text-emerald-700 dark:text-emerald-400 hover:underline font-semibold cursor-pointer"
+                >
+                  <BookmarkPlus className="w-3 h-3" />
+                  <span>{language === 'ta' ? 'கணக்கில் சேமிக்க பதிவு செய்' : 'Sign up to save permanently'}</span>
+                </button>
+              )}
+              {selectedAnimal && (
+                <span className="bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-medium px-2 py-0.5 rounded-full capitalize text-[10px]">
+                  {selectedAnimal}
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Messages */}
@@ -399,11 +539,46 @@ export const App: React.FC = () => {
         </p>
       </footer>
 
+      {/* 3-Stage Farmer Registration Wizard */}
+      <RegisterWizard
+        isOpen={isRegisterOpen}
+        onClose={() => setIsRegisterOpen(false)}
+        onSuccess={handleAuthSuccess}
+        onSwitchToLogin={() => {
+          setIsRegisterOpen(false);
+          setIsLoginOpen(true);
+        }}
+        apiBaseUrl={API_BASE}
+      />
+
+      {/* Farmer Sign In Modal */}
+      <LoginModal
+        isOpen={isLoginOpen}
+        onClose={() => setIsLoginOpen(false)}
+        onSuccess={handleAuthSuccess}
+        onSwitchToRegister={() => {
+          setIsLoginOpen(false);
+          setIsRegisterOpen(true);
+        }}
+        apiBaseUrl={API_BASE}
+      />
+
+      {/* Consultation History Drawer */}
+      <ChatHistoryDrawer
+        isOpen={isHistoryOpen}
+        onClose={() => setIsHistoryOpen(false)}
+        onSelectSession={handleSelectHistoricalSession}
+        onNewChat={handleNewConsultation}
+        apiBaseUrl={API_BASE}
+        userToken={userToken}
+        activeSessionId={sessionId}
+      />
+
       {/* Admin Login Modal */}
       <AdminLoginModal
-        isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
-        onLoginSuccess={handleLoginSuccess}
+        isOpen={isAdminLoginModalOpen}
+        onClose={() => setIsAdminLoginModalOpen(false)}
+        onLoginSuccess={handleAdminLoginSuccess}
         apiBaseUrl={API_BASE}
       />
     </div>

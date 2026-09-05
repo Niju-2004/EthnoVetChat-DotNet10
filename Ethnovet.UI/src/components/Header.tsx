@@ -1,5 +1,6 @@
 import React from 'react';
-import { Leaf, RotateCcw, Globe, Sparkles, Sun, Moon, ShieldCheck } from 'lucide-react';
+import { Leaf, RotateCcw, Globe, Sparkles, Sun, Moon, ShieldCheck, User, Clock, LogOut, LogIn } from 'lucide-react';
+import type { User as UserType } from '../types';
 
 interface HeaderProps {
   language: 'en' | 'ta';
@@ -10,6 +11,10 @@ interface HeaderProps {
   isAdminLoggedIn: boolean;
   onNewConsultation: () => void;
   isClearing?: boolean;
+  currentUser: UserType | null;
+  onOpenAuth: (mode: 'login' | 'register') => void;
+  onOpenHistory: () => void;
+  onLogout: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -21,6 +26,10 @@ export const Header: React.FC<HeaderProps> = ({
   isAdminLoggedIn,
   onNewConsultation,
   isClearing = false,
+  currentUser,
+  onOpenAuth,
+  onOpenHistory,
+  onLogout,
 }) => {
   return (
     <header className="sticky top-0 z-30 bg-emerald-800 dark:bg-slate-900 text-white shadow-md border-b border-emerald-700/50 dark:border-slate-800 transition-colors duration-200">
@@ -48,6 +57,43 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Actions */}
         <div className="flex items-center gap-2 sm:gap-2.5">
+          {/* History Button (When logged in) */}
+          {currentUser && (
+            <button
+              onClick={onOpenHistory}
+              title="View Past Consultations"
+              className="p-2 bg-emerald-700/70 dark:bg-slate-800 text-emerald-100 dark:text-emerald-300 hover:text-white hover:bg-emerald-600 dark:hover:bg-slate-700 rounded-lg border border-emerald-600/50 dark:border-slate-700 transition-all cursor-pointer flex items-center gap-1.5"
+            >
+              <Clock className="w-4 h-4" />
+              <span className="hidden sm:inline text-xs font-semibold">History</span>
+            </button>
+          )}
+
+          {/* User Account / Sign In */}
+          {currentUser ? (
+            <div className="flex items-center bg-emerald-900/60 dark:bg-slate-800/80 rounded-lg border border-emerald-700/50 dark:border-slate-700/70 p-0.5">
+              <div className="flex items-center gap-1 px-2 py-1 text-xs font-semibold text-emerald-200">
+                <User className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="max-w-[80px] sm:max-w-[100px] truncate">{currentUser.username}</span>
+              </div>
+              <button
+                onClick={onLogout}
+                title="Sign Out"
+                className="p-1 hover:text-red-300 text-slate-300 rounded cursor-pointer transition-colors"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => onOpenAuth('register')}
+              className="flex items-center gap-1 px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold shadow-xs transition-all cursor-pointer border border-emerald-500/60"
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              <span>Sign In</span>
+            </button>
+          )}
+
           {/* Language Toggle */}
           <div className="flex items-center bg-emerald-900/60 dark:bg-slate-800/80 p-0.5 rounded-lg border border-emerald-700/50 dark:border-slate-700/70">
             <button

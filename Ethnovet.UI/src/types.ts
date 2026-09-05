@@ -26,3 +26,23 @@ export interface ChatResponse {
   detectedAnimal?: string;
 }
 
+export interface User {
+  id: string;
+  username: string;
+  email: string;
+  role: string;
+  preferredLanguage: 'en' | 'ta';
+  createdAt: string;
+}
+
+export interface UserSessionSummary {
+  id: string;
+  sessionId: string;
+  title: string;
+  animal?: string;
+  language: string;
+  createdAt: string;
+  lastActiveAt: string;
+  messageCount: number;
+}
+

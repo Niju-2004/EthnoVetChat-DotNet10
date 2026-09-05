@@ -14,17 +14,26 @@ namespace EthnovetChat.ServiceLayer.Controllers
         private readonly IEthnovetRepository _repository;
         private readonly IGeminiService _geminiService;
         private readonly ISessionService _sessionService;
+        private readonly IUserAuthService _authService;
 
         public ChatController(
             IChatService chatService,
             IEthnovetRepository repository,
             IGeminiService geminiService,
-            ISessionService sessionService)
+            ISessionService sessionService,
+            IUserAuthService authService)
         {
             _chatService = chatService;
             _repository = repository;
             _geminiService = geminiService;
             _sessionService = sessionService;
+            _authService = authService;
+        }
+
+        private Guid? GetAuthenticatedUserId()
+        {
+            var authHeader = Request.Headers.Authorization.FirstOrDefault();
+            return _authService.ValidateTokenAndGetUserId(authHeader);
         }
 
         /// <summary>
@@ -41,6 +50,12 @@ namespace EthnovetChat.ServiceLayer.Controllers
                 return BadRequest(new { error = "Message is required." });
             }
 
+            var userId = GetAuthenticatedUserId();
+            if (userId.HasValue)
+            {
+                request.UserId = userId.Value;
+            }
+
             var response = await _chatService.ProcessChatAsync(request, cancellationToken);
             return Ok(response);
         }
@@ -48,6 +63,7 @@ namespace EthnovetChat.ServiceLayer.Controllers
         /// <summary>
         /// Stream chat responses in real-time with Server-Sent Events (SSE).
         /// Emits meta, token, and done events for instant word-by-word display.
+        /// Automatically links conversation turns to the authenticated farmer account in PostgreSQL.
         /// </summary>
         [HttpPost("stream")]
         public async Task StreamChat([FromBody] ChatRequestDto request, CancellationToken cancellationToken)
@@ -57,6 +73,12 @@ namespace EthnovetChat.ServiceLayer.Controllers
                 Response.StatusCode = StatusCodes.Status400BadRequest;
                 await Response.WriteAsync("{\"error\":\"Message is required.\"}", cancellationToken);
                 return;
+            }
+
+            var userId = GetAuthenticatedUserId();
+            if (userId.HasValue)
+            {
+                request.UserId = userId.Value;
             }
 
             Response.Headers.Append("Content-Type", "text/event-stream");
@@ -74,6 +96,59 @@ namespace EthnovetChat.ServiceLayer.Controllers
                 await Response.WriteAsync($"data: {payload}\n\n", cancellationToken);
                 await Response.Body.FlushAsync(cancellationToken);
             }
+        }
+
+        /// <summary>
+        /// Get all past consultation sessions for the currently logged-in farmer from PostgreSQL.
+        /// </summary>
+        [HttpGet("user-sessions")]
+        public async Task<IActionResult> GetUserSessions(CancellationToken cancellationToken)
+        {
+            var userId = GetAuthenticatedUserId();
+            if (!userId.HasValue)
+            {
+                return Unauthorized(new { message = "Authentication token required." });
+            }
+
+            var sessions = await _sessionService.GetUserSessionsAsync(userId.Value, cancellationToken);
+            return Ok(sessions);
+        }
+
+        /// <summary>
+        /// Get full transcript of a specific past consultation session from PostgreSQL.
+        /// </summary>
+        [HttpGet("user-sessions/{sessionId}")]
+        public async Task<IActionResult> GetUserSessionDetail(string sessionId, CancellationToken cancellationToken)
+        {
+            var userId = GetAuthenticatedUserId();
+            if (!userId.HasValue)
+            {
+                return Unauthorized(new { message = "Authentication token required." });
+            }
+
+            var detail = await _sessionService.GetUserSessionDetailAsync(userId.Value, sessionId, cancellationToken);
+            if (detail == null)
+            {
+                return NotFound(new { message = "Consultation session not found." });
+            }
+
+            return Ok(detail);
+        }
+
+        /// <summary>
+        /// Delete a past consultation session from PostgreSQL and in-memory cache.
+        /// </summary>
+        [HttpDelete("user-sessions/{sessionId}")]
+        public async Task<IActionResult> DeleteUserSession(string sessionId, CancellationToken cancellationToken)
+        {
+            var userId = GetAuthenticatedUserId();
+            if (!userId.HasValue)
+            {
+                return Unauthorized(new { message = "Authentication token required." });
+            }
+
+            var deleted = await _sessionService.DeleteUserSessionAsync(userId.Value, sessionId, cancellationToken);
+            return Ok(new { success = deleted, sessionId });
         }
 
         /// <summary>

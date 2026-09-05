@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using EthnovetChat.DataAccessLayer.Data;
+using EthnovetChat.DataAccessLayer.Repositories;
+using EthnovetChat.ServiceLayer.Services;
 
 namespace EthnovetChat.ServiceLayer
 {
@@ -8,7 +12,6 @@ namespace EthnovetChat.ServiceLayer
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
 
@@ -21,13 +24,30 @@ namespace EthnovetChat.ServiceLayer
                 options.KnownProxies.Clear();
             });
 
+            // Configure Neon.tech PostgreSQL Database (with local in-memory fallback if not yet set)
+            var neonConn = builder.Configuration.GetConnectionString("NeonPostgres")
+                ?? Environment.GetEnvironmentVariable("ConnectionStrings__NeonPostgres")
+                ?? Environment.GetEnvironmentVariable("DATABASE_URL");
+
+            if (!string.IsNullOrWhiteSpace(neonConn) && !neonConn.Contains("YOUR_NEON_"))
+            {
+                builder.Services.AddDbContext<EthnovetDbContext>(options =>
+                    options.UseNpgsql(neonConn));
+            }
+            else
+            {
+                builder.Services.AddDbContext<EthnovetDbContext>(options =>
+                    options.UseInMemoryDatabase("EthnovetChat_Db"));
+            }
+
             // Register EthnoVet Core Services
-            builder.Services.AddSingleton<EthnovetChat.DataAccessLayer.Repositories.IEthnovetRepository, EthnovetChat.DataAccessLayer.Repositories.EthnovetRepository>();
-            builder.Services.AddSingleton<EthnovetChat.ServiceLayer.Services.ISessionService, EthnovetChat.ServiceLayer.Services.SessionService>();
-            builder.Services.AddSingleton<EthnovetChat.ServiceLayer.Services.IRagService, EthnovetChat.ServiceLayer.Services.RagService>();
-            builder.Services.AddHttpClient<EthnovetChat.ServiceLayer.Services.IGeminiService, EthnovetChat.ServiceLayer.Services.GeminiService>();
-            builder.Services.AddScoped<EthnovetChat.ServiceLayer.Services.IChatService, EthnovetChat.ServiceLayer.Services.ChatService>();
-            builder.Services.AddSingleton<EthnovetChat.ServiceLayer.Services.IAdminAuthService, EthnovetChat.ServiceLayer.Services.AdminAuthService>();
+            builder.Services.AddSingleton<IEthnovetRepository, EthnovetRepository>();
+            builder.Services.AddSingleton<ISessionService, SessionService>();
+            builder.Services.AddSingleton<IRagService, RagService>();
+            builder.Services.AddHttpClient<IGeminiService, GeminiService>();
+            builder.Services.AddScoped<IChatService, ChatService>();
+            builder.Services.AddSingleton<IAdminAuthService, AdminAuthService>();
+            builder.Services.AddScoped<IUserAuthService, UserAuthService>();
 
             // Enable CORS for web / mobile clients
             builder.Services.AddCors(options =>
@@ -48,6 +68,21 @@ namespace EthnovetChat.ServiceLayer
             }
 
             var app = builder.Build();
+
+            // Automatic Database Initialization (ensures tables exist on startup)
+            using (var scope = app.Services.CreateScope())
+            {
+                try
+                {
+                    var db = scope.ServiceProvider.GetRequiredService<EthnovetDbContext>();
+                    db.Database.EnsureCreated();
+                }
+                catch (Exception ex)
+                {
+                    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+                    logger.LogWarning("Database initialization note: {Message}", ex.Message);
+                }
+            }
 
             app.UseForwardedHeaders();
 
@@ -78,3 +113,4 @@ namespace EthnovetChat.ServiceLayer
         }
     }
 }
+

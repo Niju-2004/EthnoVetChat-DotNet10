@@ -74,7 +74,7 @@ namespace EthnovetChat.ServiceLayer.Services
             if (intent == ChatIntent.Greeting || intent == ChatIntent.AnimalOnly)
             {
                 var fastAnswer = GenerateFallbackResponse(intent, remedies, detectedAnimal, language);
-                _sessionService.RecordTurn(session.SessionId, request.Message, fastAnswer, detectedAnimal, language);
+                _sessionService.RecordTurn(session.SessionId, request.Message, fastAnswer, detectedAnimal, language, request.UserId);
                 return new ChatResponseDto
                 {
                     Answer = fastAnswer,
@@ -249,8 +249,11 @@ namespace EthnovetChat.ServiceLayer.Services
                 };
             }
 
+            var remediesJson = remedies.Count > 0
+                ? System.Text.Json.JsonSerializer.Serialize(remedies.Select(RemedyDto.FromEntity))
+                : null;
             var finalAnswer = fullAnswerBuilder.ToString();
-            _sessionService.RecordTurn(session.SessionId, request.Message, finalAnswer, detectedAnimal, language);
+            _sessionService.RecordTurn(session.SessionId, request.Message, finalAnswer, detectedAnimal, language, request.UserId, remediesJson);
 
             yield return new ChatStreamEvent
             {
