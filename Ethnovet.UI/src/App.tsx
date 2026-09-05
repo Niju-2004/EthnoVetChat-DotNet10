@@ -474,36 +474,43 @@ export const App: React.FC = () => {
           />
 
           {/* Main Chat Scroll Area */}
-          <main className="flex-1 max-w-4xl w-full mx-auto px-4 py-4 flex flex-col justify-between">
-            <div className="space-y-4">
+          <main className="flex-1 max-w-4xl w-full mx-auto px-2.5 sm:px-4 py-2.5 sm:py-4 flex flex-col justify-between">
+            <div className="space-y-3 sm:space-y-4">
               {/* Active Session Info Pill */}
-              <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 bg-white/60 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800 rounded-lg px-3 py-1.5 shadow-2xs">
-                <div className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                  <span className="font-medium">
+              <div className="flex flex-wrap items-center justify-between gap-1.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 bg-white/70 dark:bg-slate-900/70 border border-slate-200/70 dark:border-slate-800 rounded-lg px-2.5 sm:px-3 py-1.5 shadow-2xs">
+                <div className="flex items-center gap-1.5 truncate">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+                  <span className="font-medium truncate">
                     {currentUser ? (
-                      <span>
-                        {language === 'ta' ? 'விவசாயி கணக்கு (கிளவுட் சேமிப்பு):' : 'Authenticated Cloud Session:'}
-                      </span>
+                      <>
+                        <span className="hidden sm:inline">
+                          {language === 'ta' ? 'விவசாயி கணக்கு (கிளவுட் சேமிப்பு):' : 'Cloud Session:'}
+                        </span>
+                        <span className="sm:hidden">Cloud:</span>
+                      </>
                     ) : (
-                      <span>
-                        {language === 'ta' ? 'உள்நுழைவு தேவை:' : 'Sign In Required:'}
-                      </span>
+                      <>
+                        <span className="hidden sm:inline">
+                          {language === 'ta' ? 'உள்நுழைவு தேவை:' : 'Sign In Required:'}
+                        </span>
+                        <span className="sm:hidden">Session:</span>
+                      </>
                     )}
                   </span>
-                  <code className="text-[10px] text-slate-600 dark:text-slate-300 font-mono bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded">
-                    {sessionId ? sessionId.substring(0, 8) + '...' : 'initializing'}
+                  <code className="text-[10px] text-slate-600 dark:text-slate-300 font-mono bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded shrink-0">
+                    {sessionId ? sessionId.substring(0, 8) : 'init'}
                   </code>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 shrink-0">
                   {!currentUser && (
                     <button
                       onClick={() => setIsRegisterOpen(true)}
-                      className="hidden sm:inline-flex items-center gap-1 text-[10px] text-emerald-700 dark:text-emerald-400 hover:underline font-semibold cursor-pointer"
+                      className="text-[10px] text-emerald-700 dark:text-emerald-400 hover:underline font-semibold cursor-pointer flex items-center gap-1"
                     >
                       <BookmarkPlus className="w-3 h-3" />
-                      <span>{language === 'ta' ? 'கணக்கில் சேமிக்க பதிவு செய்' : 'Sign up to save permanently'}</span>
+                      <span className="hidden sm:inline">{language === 'ta' ? 'கணக்கில் சேமிக்க பதிவு செய்' : 'Sign up to save'}</span>
+                      <span className="sm:hidden">{language === 'ta' ? 'பதிவு' : 'Sign up'}</span>
                     </button>
                   )}
                   {selectedAnimal && (
@@ -521,11 +528,11 @@ export const App: React.FC = () => {
 
               {/* Loading Indicator */}
               {isLoading && (
-                <div className="flex items-start gap-3 my-4">
-                  <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-xs shrink-0 mt-0.5 animate-pulse">
-                    <Sparkles className="w-4 h-4 text-amber-300" />
+                <div className="flex items-start gap-2.5 sm:gap-3 my-3 sm:my-4">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-xs shrink-0 mt-0.5 animate-pulse">
+                    <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-300" />
                   </div>
-                  <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl rounded-tl-xs px-4 py-3 shadow-xs flex items-center gap-2">
+                  <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl rounded-tl-xs px-3 sm:px-4 py-2.5 sm:py-3 shadow-xs flex items-center gap-2">
                     <div className="flex items-center gap-1">
                       <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce [animation-delay:-0.3s]"></span>
                       <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce [animation-delay:-0.15s]"></span>
@@ -569,10 +576,10 @@ export const App: React.FC = () => {
               selectedAnimal={selectedAnimal}
             />
           ) : (
-            <div className="max-w-4xl w-full mx-auto px-4 pb-4">
-              <div className="bg-white dark:bg-slate-900 border-2 border-dashed border-emerald-500/40 dark:border-emerald-600/40 rounded-2xl p-5 shadow-sm text-center flex flex-col items-center justify-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 flex items-center justify-center shadow-xs">
-                  <Lock className="w-6 h-6" />
+            <div className="max-w-4xl w-full mx-auto px-2.5 sm:px-4 pb-3 sm:pb-4">
+              <div className="bg-white dark:bg-slate-900 border-2 border-dashed border-emerald-500/40 dark:border-emerald-600/40 rounded-2xl p-4 sm:p-5 shadow-sm text-center flex flex-col items-center justify-center gap-2.5 sm:gap-3">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 flex items-center justify-center shadow-xs">
+                  <Lock className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
                 <div>
                   <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 m-0">
@@ -580,23 +587,23 @@ export const App: React.FC = () => {
                       ? 'கால்நடை மருத்துவ ஆலோசனை பெற உள்நுழையவும்'
                       : 'Farmer Sign In Required'}
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto mt-1 mb-0">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto mt-1 mb-0 leading-relaxed">
                     {language === 'ta'
                       ? 'உங்கள் கால்நடைகளுக்கான மூலிகை மருத்துவ ஆலோசனையைப் பெறவும், முந்தைய மருத்துவக் குறிப்புகளைப் பாதுகாப்பாகச் சேமிக்கவும் உள்நுழையவும் அல்லது புதிய பதிவை மேற்கொள்ளவும்.'
                       : 'To consult the EthnoVet AI assistant, receive verified traditional remedies, and securely track your livestock treatment history, please sign in or register.'}
                   </p>
                 </div>
-                <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2 sm:gap-3 w-full sm:w-auto pt-1">
                   <button
                     onClick={() => setIsLoginOpen(true)}
-                    className="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer flex items-center gap-1.5"
+                    className="w-full sm:w-auto px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5 active:scale-95"
                   >
                     <LogIn className="w-4 h-4" />
                     <span>{language === 'ta' ? 'உள்நுழையவும்' : 'Sign In to Consult'}</span>
                   </button>
                   <button
                     onClick={() => setIsRegisterOpen(true)}
-                    className="px-5 py-2.5 bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 rounded-xl text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5"
+                    className="w-full sm:w-auto px-5 py-2.5 bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 rounded-xl text-xs font-semibold transition-colors cursor-pointer flex items-center justify-center gap-1.5 active:scale-95"
                   >
                     <UserCheck className="w-4 h-4" />
                     <span>{language === 'ta' ? 'புதிய விவசாயி பதிவு' : 'Register as New Farmer'}</span>
@@ -607,8 +614,8 @@ export const App: React.FC = () => {
           )}
 
           {/* Global Disclaimer Footer */}
-          <footer className="text-center py-2 px-4 text-[11px] text-slate-500 dark:text-slate-400 border-t border-slate-200/80 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-900/50 transition-colors duration-200">
-            <p className="m-0">
+          <footer className="text-center py-2 px-3 sm:px-4 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 border-t border-slate-200/80 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-900/50 transition-colors duration-200">
+            <p className="m-0 leading-tight sm:leading-normal">
               {language === 'ta'
                 ? '⚠️ பாரம்பரிய மூலிகை மருத்துவ முறைகள் முதலுதவிக்காக மட்டுமே. அவசர மற்றும் தீவிர நிலைகளில் உடனடியாக கால்நடை மருத்துவரை அணுகவும்.'
                 : '⚠️ Traditional remedies are supportive practices for common conditions. In emergencies or severe acute diseases, consult a registered veterinarian.'}

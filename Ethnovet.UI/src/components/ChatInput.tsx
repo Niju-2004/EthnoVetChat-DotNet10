@@ -114,16 +114,16 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   const currentSuggestions = language === 'ta' ? suggestionsTa : suggestionsEn;
 
   return (
-    <div className="sticky bottom-0 z-20 bg-gradient-to-t from-slate-50 via-slate-50/95 to-transparent dark:from-slate-950 dark:via-slate-950/95 pt-3 pb-4 px-4 transition-colors duration-200">
-      <div className="max-w-4xl mx-auto space-y-2">
+    <div className="sticky bottom-0 z-20 bg-gradient-to-t from-slate-50 via-slate-50/95 to-transparent dark:from-slate-950 dark:via-slate-950/95 pt-2 pb-2 sm:pb-4 px-2.5 sm:px-4 transition-colors duration-200">
+      <div className="max-w-4xl mx-auto space-y-1.5 sm:space-y-2">
         {/* Quick Suggestion Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar scroll-smooth touch-pan-x">
           {currentSuggestions.map((suggestion, idx) => (
             <button
               key={idx}
               onClick={() => onSendMessage(suggestion)}
               disabled={isLoading}
-              className="shrink-0 text-[11px] font-medium bg-white/90 dark:bg-slate-900/90 hover:bg-emerald-50 dark:hover:bg-emerald-950/60 text-slate-700 dark:text-slate-300 hover:text-emerald-800 dark:hover:text-emerald-300 border border-slate-200/80 dark:border-slate-800 hover:border-emerald-300 dark:hover:border-emerald-700 rounded-full px-3 py-1 transition-all shadow-2xs disabled:opacity-50 cursor-pointer"
+              className="shrink-0 text-[11px] sm:text-xs font-medium bg-white/95 dark:bg-slate-900/95 hover:bg-emerald-50 dark:hover:bg-emerald-950/60 text-slate-700 dark:text-slate-300 hover:text-emerald-800 dark:hover:text-emerald-300 border border-slate-200/90 dark:border-slate-800 hover:border-emerald-300 dark:hover:border-emerald-700 rounded-full px-2.5 sm:px-3 py-1 transition-all shadow-2xs disabled:opacity-50 cursor-pointer active:scale-95 select-none"
             >
               {suggestion}
             </button>
@@ -131,22 +131,22 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         </div>
 
         {/* Input Box */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-300 dark:border-slate-700 shadow-md p-2 flex items-end gap-2 focus-within:border-emerald-500 dark:focus-within:border-emerald-400 focus-within:ring-2 focus-within:ring-emerald-500/20 transition-all">
+        <div className="bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl border border-slate-300 dark:border-slate-700 shadow-md p-1.5 sm:p-2 flex items-end gap-1.5 sm:gap-2 focus-within:border-emerald-500 dark:focus-within:border-emerald-400 focus-within:ring-2 focus-within:ring-emerald-500/20 transition-all">
           {/* Microphone Button */}
           <button
             type="button"
             onClick={toggleListening}
             title={isListening ? 'Stop listening' : 'Speak your query'}
-            className={`p-2.5 rounded-xl transition-all cursor-pointer ${
+            className={`w-9 h-9 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center transition-all cursor-pointer shrink-0 active:scale-95 ${
               isListening
                 ? 'bg-red-500 text-white animate-pulse shadow-md'
                 : 'text-slate-500 dark:text-slate-400 hover:text-emerald-700 dark:hover:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-slate-800'
             }`}
           >
-            {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+            {isListening ? <MicOff className="w-4 h-4 sm:w-5 sm:h-5" /> : <Mic className="w-4 h-4 sm:w-5 sm:h-5" />}
           </button>
 
-          {/* Textarea */}
+          {/* Textarea: text-base on mobile prevents iOS Safari automatic viewport zoom */}
           <textarea
             ref={textareaRef}
             rows={1}
@@ -157,12 +157,12 @@ export const ChatInput: React.FC<ChatInputProps> = ({
               language === 'ta'
                 ? selectedAnimal
                   ? `${selectedAnimal} பற்றிய உங்கள் கேள்வியை எழுதுங்கள்...`
-                  : 'கால்நடை அறிகுறிகள் அல்லது நோய் பற்றி கேளுங்கள் (Shift+Enter புதிய வரி)...'
+                  : 'கால்நடை அறிகுறிகள் அல்லது நோய் பற்றி கேளுங்கள்...'
                 : selectedAnimal
-                ? `Ask about ${selectedAnimal} symptoms or herbal remedies...`
-                : 'Describe livestock symptoms, disease or ask for herbal remedy...'
+                ? `Ask about ${selectedAnimal} symptoms or remedies...`
+                : 'Describe livestock symptoms or ask for herbal remedy...'
             }
-            className="flex-1 max-h-28 py-2 px-1 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 bg-transparent resize-none focus:outline-hidden"
+            className="flex-1 max-h-24 sm:max-h-28 py-1.5 sm:py-2 px-1 text-base sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 bg-transparent resize-none focus:outline-hidden leading-relaxed"
           />
 
           {/* Send Button */}
@@ -170,7 +170,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             type="button"
             onClick={handleSend}
             disabled={!input.trim() || isLoading}
-            className="p-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white disabled:opacity-40 disabled:hover:bg-emerald-600 transition-all shadow-xs cursor-pointer shrink-0"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white disabled:opacity-40 disabled:hover:bg-emerald-600 transition-all shadow-xs cursor-pointer shrink-0 flex items-center justify-center active:scale-95"
             aria-label="Send message"
           >
             <Send className="w-4 h-4" />
@@ -179,7 +179,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 
         {/* Listening Indicator Note */}
         {isListening && (
-          <div className="text-center text-xs font-semibold text-red-600 dark:text-red-400 animate-pulse">
+          <div className="text-center text-xs font-semibold text-red-600 dark:text-red-400 animate-pulse py-0.5">
             ● {language === 'ta' ? 'கேட்கிறது... தமிழில் பேசுங்கள்' : 'Listening... Speak now'}
           </div>
         )}

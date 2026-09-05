@@ -102,12 +102,12 @@ export const RegisterWizard: React.FC<RegisterWizardProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-4 animate-in fade-in duration-200">
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl max-w-lg w-full p-6 text-slate-900 dark:text-slate-100 overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-3 sm:p-4 animate-in fade-in duration-200">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl sm:rounded-3xl shadow-2xl max-w-lg w-full p-4 sm:p-6 text-slate-900 dark:text-slate-100 max-h-[92vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+        <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-slate-100 dark:border-slate-800">
           <div>
-            <h3 className="text-base font-bold text-emerald-950 dark:text-emerald-300 m-0">
+            <h3 className="text-sm sm:text-base font-bold text-emerald-950 dark:text-emerald-300 m-0">
               Create Farmer Account
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 m-0">
@@ -123,9 +123,9 @@ export const RegisterWizard: React.FC<RegisterWizardProps> = ({
         </div>
 
         {/* 3-Stage Progress Indicator */}
-        <div className="grid grid-cols-3 gap-2 my-5">
+        <div className="grid grid-cols-3 gap-1.5 sm:gap-2 my-3.5 sm:my-5">
           <div
-            className={`flex items-center gap-2 p-2 rounded-xl border text-xs font-semibold ${
+            className={`flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-xl border text-[10px] sm:text-xs font-semibold ${
               step === 1
                 ? 'bg-emerald-50 dark:bg-emerald-950/80 border-emerald-500 text-emerald-800 dark:text-emerald-300'
                 : step > 1
@@ -133,7 +133,7 @@ export const RegisterWizard: React.FC<RegisterWizardProps> = ({
                 : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400'
             }`}
           >
-            <span className="w-5 h-5 rounded-full bg-emerald-600 text-white text-[11px] flex items-center justify-center shrink-0">
+            <span className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-emerald-600 text-white text-[9px] sm:text-[11px] flex items-center justify-center shrink-0">
               1
             </span>
             <span className="truncate">Credentials</span>

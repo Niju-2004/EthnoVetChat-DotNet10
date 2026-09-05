@@ -57,11 +57,11 @@ export const LoginModal: React.FC<LoginModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-4 animate-in fade-in duration-200">
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl max-w-md w-full p-6 text-slate-900 dark:text-slate-100">
-        <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-3 sm:p-4 animate-in fade-in duration-200">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl sm:rounded-3xl shadow-2xl max-w-md w-full p-4 sm:p-6 text-slate-900 dark:text-slate-100 max-h-[92vh] overflow-y-auto">
+        <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-slate-100 dark:border-slate-800">
           <div>
-            <h3 className="text-base font-bold text-emerald-950 dark:text-emerald-300 m-0">Farmer Sign In</h3>
+            <h3 className="text-sm sm:text-base font-bold text-emerald-950 dark:text-emerald-300 m-0">Farmer Sign In</h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 m-0">Access your saved consultations</p>
           </div>
           <button

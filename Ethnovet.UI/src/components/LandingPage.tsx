@@ -124,45 +124,45 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   ];
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-6 space-y-12">
+    <div className="max-w-5xl mx-auto px-3 sm:px-6 py-4 sm:py-6 space-y-8 sm:space-y-12">
       {/* Hero Section */}
-      <section className="text-center space-y-4 pt-4 sm:pt-6">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-xs font-semibold border border-emerald-300 dark:border-emerald-800 shadow-2xs">
-          <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-          <span>{isTa ? 'நிஜு (Niju) உருவாக்கிய AI ஆப்' : 'Created by Niju • Niju App'}</span>
-          <span className="text-slate-400">•</span>
-          <span>{isTa ? 'பாரம்பரிய கால்நடை வழிகாட்டி' : 'Traditional EthnoVet AI'}</span>
+      <section className="text-center space-y-3.5 sm:space-y-4 pt-2 sm:pt-6">
+        <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[11px] sm:text-xs font-semibold border border-emerald-300 dark:border-emerald-800 shadow-2xs">
+          <Sparkles className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+          <span className="truncate">{isTa ? 'நிஜு (Niju) உருவாக்கிய AI ஆப்' : 'Created by Niju • Niju App'}</span>
+          <span className="text-slate-400 hidden sm:inline">•</span>
+          <span className="hidden sm:inline">{isTa ? 'பாரம்பரிய கால்நடை வழிகாட்டி' : 'Traditional EthnoVet AI'}</span>
         </div>
 
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
+        <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight break-words px-1">
           {isTa ? (
             <>
               பாரம்பரிய மூலிகை மருத்துவம்,{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500 block sm:inline">
                 நவீன AI தொழில்நுட்பத்துடன்
               </span>
             </>
           ) : (
             <>
               Traditional Livestock Healing,{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500 block sm:inline">
                 Powered by Modern AI
               </span>
             </>
           )}
         </h1>
 
-        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+        <p className="text-xs sm:text-base text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed px-1">
           {isTa
             ? 'எத்னோவெட் சாட் (EthnoVet Chat / Niju App) என்பது விவசாயிகள் மற்றும் கால்நடை வளர்ப்போருக்கான சிறப்பு AI உதவியாளர். மாடு, ஆடு, கோழிகளுக்கான முதலுதவி மூலிகை சிகிச்சைகள், மருந்தளவு மற்றும் பாதுகாப்பு குறிப்புகளை உடனடியாகப் பெறுங்கள்.'
             : 'EthnoVet Chat (Niju Chat App) is a clinically safe AI companion designed for rural farmers and animal owners. Get instant traditional remedies, herbal preparations, dosage guidance, and species toxicity warnings.'}
         </p>
 
-        {/* CTA Buttons */}
-        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+        {/* CTA Buttons - Full width on phone for effortless thumb tapping */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2.5 sm:gap-3 pt-2 max-w-sm sm:max-w-none mx-auto">
           <button
             onClick={() => onStartConsultation()}
-            className="px-6 py-3 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-sm font-bold shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-2 group"
+            className="w-full sm:w-auto px-6 py-3 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-sm font-bold shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 group active:scale-95"
           >
             <MessageSquare className="w-4 h-4" />
             <span>{isTa ? 'ஆலோசனையைத் தொடங்கு' : 'Start Veterinary Chat'}</span>
@@ -172,7 +172,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           {!currentUser && (
             <button
               onClick={() => onOpenAuth('register')}
-              className="px-5 py-3 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-semibold transition-all cursor-pointer flex items-center gap-2"
+              className="w-full sm:w-auto px-5 py-3 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-semibold transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-95"
             >
               <UserCheck className="w-4 h-4 text-emerald-600" />
               <span>{isTa ? 'புதிய விவசாயி பதிவு' : 'Free Farmer Sign Up'}</span>
@@ -182,9 +182,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       </section>
 
       {/* Capabilities Section */}
-      <section className="space-y-5">
+      <section className="space-y-4 sm:space-y-5">
         <div className="text-center space-y-1">
-          <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+          <h2 className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-white">
             {isTa ? 'இந்த AI என்ன செய்யும்? (முக்கிய அம்சங்கள்)' : 'What This AI Is Capable Of'}
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
@@ -194,19 +194,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {capabilities.map((c, idx) => (
             <div
               key={idx}
-              className={`p-5 rounded-2xl border transition-all duration-200 hover:shadow-sm ${c.color}`}
+              className={`p-4 sm:p-5 rounded-2xl border transition-all duration-200 hover:shadow-sm ${c.color}`}
             >
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center justify-between mb-2 sm:mb-3">
                 <span className="text-2xl">{c.icon}</span>
                 <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/80 dark:bg-slate-900/80 text-slate-700 dark:text-slate-300 border border-slate-200/50 dark:border-slate-700/50">
                   {c.badge}
                 </span>
               </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1.5">{c.title}</h3>
+              <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white mb-1">{c.title}</h3>
               <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed m-0">{c.desc}</p>
             </div>
           ))}
@@ -214,9 +214,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       </section>
 
       {/* How It Works Section */}
-      <section className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xs space-y-6">
+      <section className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl border border-slate-200 dark:border-slate-800 p-4 sm:p-8 shadow-xs space-y-4 sm:space-y-6">
         <div className="text-center space-y-1">
-          <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+          <h2 className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-white">
             {isTa ? 'எளிய 3 படிகளில் ஆலோசனை' : 'How It Works in 3 Simple Steps'}
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
@@ -224,13 +224,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-6 pt-1 sm:pt-2">
           {steps.map((s, idx) => (
-            <div key={idx} className="flex flex-col items-center text-center space-y-2.5 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
-              <span className="w-10 h-10 rounded-full bg-emerald-600 text-white font-mono font-bold text-sm flex items-center justify-center shadow-xs">
+            <div key={idx} className="flex flex-col items-center text-center space-y-2 p-3.5 sm:p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+              <span className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-emerald-600 text-white font-mono font-bold text-xs sm:text-sm flex items-center justify-center shadow-xs shrink-0">
                 {s.step}
               </span>
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white m-0">{s.title}</h3>
+              <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white m-0">{s.title}</h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed m-0">{s.desc}</p>
             </div>
           ))}
