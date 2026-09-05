@@ -94,6 +94,11 @@ namespace EthnovetChat.ServiceLayer.Services
             return session;
         }
 
+        public IReadOnlyList<ChatSession> GetAllSessions()
+        {
+            return _sessions.Values.OrderByDescending(s => s.LastActiveAt).ToList();
+        }
+
         private void EvictExpiredSessions(object? state)
         {
             var cutoff = DateTime.UtcNow - _expirationWindow;

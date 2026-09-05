@@ -165,6 +165,46 @@ namespace EthnovetChat.DataAccessLayer.Repositories
 
             return Task.FromResult<IReadOnlyList<string>>(animals);
         }
+
+        private static readonly object _syncLock = new();
+
+        public Task<EthnovetRemedy> AddAsync(EthnovetRemedy remedy, CancellationToken cancellationToken = default)
+        {
+            lock (_syncLock)
+            {
+                var list = _remedies.Value;
+                var nextId = list.Count > 0 ? list.Max(r => r.Id) + 1 : 1;
+                remedy.Id = nextId;
+                list.Add(remedy);
+                return Task.FromResult(remedy);
+            }
+        }
+
+        public Task<bool> UpdateAsync(EthnovetRemedy remedy, CancellationToken cancellationToken = default)
+        {
+            lock (_syncLock)
+            {
+                var list = _remedies.Value;
+                var idx = list.FindIndex(r => r.Id == remedy.Id);
+                if (idx < 0) return Task.FromResult(false);
+
+                list[idx] = remedy;
+                return Task.FromResult(true);
+            }
+        }
+
+        public Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
+        {
+            lock (_syncLock)
+            {
+                var list = _remedies.Value;
+                var idx = list.FindIndex(r => r.Id == id);
+                if (idx < 0) return Task.FromResult(false);
+
+                list.RemoveAt(idx);
+                return Task.FromResult(true);
+            }
+        }
     }
 }
 

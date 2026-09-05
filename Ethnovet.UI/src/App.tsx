@@ -3,10 +3,14 @@ import { Header } from './components/Header';
 import { AnimalSelector } from './components/AnimalSelector';
 import { MessageItem } from './components/MessageItem';
 import { ChatInput } from './components/ChatInput';
+import { AdminLoginModal } from './components/Admin/AdminLoginModal';
+import { AdminPortal } from './components/Admin/AdminPortal';
 import type { ChatMessage } from './types';
 import { Sparkles, AlertCircle } from 'lucide-react';
 
 const SESSION_KEY = 'ethnovet_chat_session_id';
+const THEME_KEY = 'ethnovet_theme';
+const ADMIN_TOKEN_KEY = 'ethnovet_admin_token';
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
 
 const getInitialGreeting = (lang: 'en' | 'ta'): ChatMessage => {
@@ -51,15 +55,48 @@ export const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isClearing, setIsClearing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Theme State
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const saved = localStorage.getItem(THEME_KEY);
+    if (saved === 'dark' || saved === 'light') return saved;
+    return typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light';
+  });
+
+  // Admin State
+  const [adminToken, setAdminToken] = useState<string | null>(() => {
+    return typeof sessionStorage !== 'undefined' ? sessionStorage.getItem(ADMIN_TOKEN_KEY) : null;
+  });
+  const [isAdminPortalOpen, setIsAdminPortalOpen] = useState<boolean>(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Apply theme class to document root
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem(THEME_KEY, theme);
+  }, [theme]);
+
+  // Toggle theme
+  const handleToggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
 
   // Initialize or restore session ID
   useEffect(() => {
     let currentSession = localStorage.getItem(SESSION_KEY);
     if (!currentSession) {
-      currentSession = typeof crypto !== 'undefined' && crypto.randomUUID
-        ? crypto.randomUUID()
-        : 'session_' + Math.random().toString(36).substring(2, 15);
+      currentSession =
+        typeof crypto !== 'undefined' && crypto.randomUUID
+          ? crypto.randomUUID()
+          : 'session_' + Math.random().toString(36).substring(2, 15);
       localStorage.setItem(SESSION_KEY, currentSession);
     }
     setSessionId(currentSession);
@@ -210,9 +247,10 @@ export const App: React.FC = () => {
         });
       }
     } finally {
-      const newSession = typeof crypto !== 'undefined' && crypto.randomUUID
-        ? crypto.randomUUID()
-        : 'session_' + Math.random().toString(36).substring(2, 15);
+      const newSession =
+        typeof crypto !== 'undefined' && crypto.randomUUID
+          ? crypto.randomUUID()
+          : 'session_' + Math.random().toString(36).substring(2, 15);
       localStorage.setItem(SESSION_KEY, newSession);
       setSessionId(newSession);
       setSelectedAnimal(null);
@@ -221,12 +259,49 @@ export const App: React.FC = () => {
     }
   };
 
+  // Admin Actions
+  const handleOpenAdmin = () => {
+    if (adminToken) {
+      setIsAdminPortalOpen(true);
+    } else {
+      setIsLoginModalOpen(true);
+    }
+  };
+
+  const handleLoginSuccess = (token: string) => {
+    sessionStorage.setItem(ADMIN_TOKEN_KEY, token);
+    setAdminToken(token);
+    setIsAdminPortalOpen(true);
+  };
+
+  const handleAdminLogout = () => {
+    sessionStorage.removeItem(ADMIN_TOKEN_KEY);
+    setAdminToken(null);
+    setIsAdminPortalOpen(false);
+  };
+
+  // If Admin Portal is actively opened and user is authenticated, render Admin View
+  if (isAdminPortalOpen && adminToken) {
+    return (
+      <AdminPortal
+        apiBaseUrl={API_BASE}
+        adminToken={adminToken}
+        onBackToChat={() => setIsAdminPortalOpen(false)}
+        onLogout={handleAdminLogout}
+      />
+    );
+  }
+
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50 text-slate-900">
+    <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
       {/* Header */}
       <Header
         language={language}
         onLanguageChange={handleLanguageChange}
+        theme={theme}
+        onToggleTheme={handleToggleTheme}
+        onOpenAdmin={handleOpenAdmin}
+        isAdminLoggedIn={!!adminToken}
         onNewConsultation={handleNewConsultation}
         isClearing={isClearing}
       />
@@ -242,18 +317,20 @@ export const App: React.FC = () => {
       <main className="flex-1 max-w-4xl w-full mx-auto px-4 py-4 flex flex-col justify-between">
         <div className="space-y-4">
           {/* Active Session Info Pill */}
-          <div className="flex items-center justify-between text-[11px] text-slate-500 bg-white/60 border border-slate-200/60 rounded-lg px-3 py-1.5 shadow-2xs">
+          <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 bg-white/60 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800 rounded-lg px-3 py-1.5 shadow-2xs">
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               <span className="font-medium">
-                {language === 'ta' ? 'செயலில் உள்ள அமர்வு (5 உரையாடல்கள் நினைவகம்):' : 'Active Multi-turn Session (5-turn Memory):'}
+                {language === 'ta'
+                  ? 'செயலில் உள்ள அமர்வு (5 உரையாடல்கள் நினைவகம்):'
+                  : 'Active Multi-turn Session (5-turn Memory):'}
               </span>
-              <code className="text-[10px] text-slate-600 font-mono bg-slate-100 px-1 py-0.5 rounded">
+              <code className="text-[10px] text-slate-600 dark:text-slate-300 font-mono bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded">
                 {sessionId ? sessionId.substring(0, 8) + '...' : 'initializing'}
               </code>
             </div>
             {selectedAnimal && (
-              <span className="bg-emerald-100 text-emerald-800 font-medium px-2 py-0.5 rounded-full capitalize text-[10px]">
+              <span className="bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-medium px-2 py-0.5 rounded-full capitalize text-[10px]">
                 {selectedAnimal}
               </span>
             )}
@@ -270,13 +347,13 @@ export const App: React.FC = () => {
               <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-xs shrink-0 mt-0.5 animate-pulse">
                 <Sparkles className="w-4 h-4 text-amber-300" />
               </div>
-              <div className="bg-white border border-slate-200 rounded-2xl rounded-tl-xs px-4 py-3 shadow-xs flex items-center gap-2">
+              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl rounded-tl-xs px-4 py-3 shadow-xs flex items-center gap-2">
                 <div className="flex items-center gap-1">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce [animation-delay:-0.3s]"></span>
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce [animation-delay:-0.15s]"></span>
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce"></span>
                 </div>
-                <span className="text-xs text-slate-500 font-medium ml-1">
+                <span className="text-xs text-slate-500 dark:text-slate-400 font-medium ml-1">
                   {language === 'ta'
                     ? 'மூலிகை தரவுத்தளத்தில் தேடுகிறது...'
                     : 'Searching remedies & formulating advice...'}
@@ -287,14 +364,14 @@ export const App: React.FC = () => {
 
           {/* Error Banner */}
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-xl flex items-center justify-between text-xs text-red-800">
+            <div className="p-3 bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-900 rounded-xl flex items-center justify-between text-xs text-red-800 dark:text-red-300">
               <div className="flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+                <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400 shrink-0" />
                 <span>{error}</span>
               </div>
               <button
                 onClick={() => setError(null)}
-                className="text-red-700 hover:text-red-900 font-semibold underline text-xs cursor-pointer"
+                className="text-red-700 dark:text-red-400 hover:text-red-900 font-semibold underline text-xs cursor-pointer"
               >
                 Dismiss
               </button>
@@ -314,13 +391,21 @@ export const App: React.FC = () => {
       />
 
       {/* Global Disclaimer Footer */}
-      <footer className="text-center py-2 px-4 text-[11px] text-slate-500 border-t border-slate-200/80 bg-slate-100/50">
+      <footer className="text-center py-2 px-4 text-[11px] text-slate-500 dark:text-slate-400 border-t border-slate-200/80 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-900/50 transition-colors duration-200">
         <p className="m-0">
           {language === 'ta'
             ? '⚠️ பாரம்பரிய மூலிகை மருத்துவ முறைகள் முதலுதவிக்காக மட்டுமே. அவசர மற்றும் தீவிர நிலைகளில் உடனடியாக கால்நடை மருத்துவரை அணுகவும்.'
             : '⚠️ Traditional remedies are supportive practices for common conditions. In emergencies or severe acute diseases, consult a registered veterinarian.'}
         </p>
       </footer>
+
+      {/* Admin Login Modal */}
+      <AdminLoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+        onLoginSuccess={handleLoginSuccess}
+        apiBaseUrl={API_BASE}
+      />
     </div>
   );
 };

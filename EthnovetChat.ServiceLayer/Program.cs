@@ -27,6 +27,7 @@ namespace EthnovetChat.ServiceLayer
             builder.Services.AddSingleton<EthnovetChat.ServiceLayer.Services.IRagService, EthnovetChat.ServiceLayer.Services.RagService>();
             builder.Services.AddHttpClient<EthnovetChat.ServiceLayer.Services.IGeminiService, EthnovetChat.ServiceLayer.Services.GeminiService>();
             builder.Services.AddScoped<EthnovetChat.ServiceLayer.Services.IChatService, EthnovetChat.ServiceLayer.Services.ChatService>();
+            builder.Services.AddSingleton<EthnovetChat.ServiceLayer.Services.IAdminAuthService, EthnovetChat.ServiceLayer.Services.AdminAuthService>();
 
             // Enable CORS for web / mobile clients
             builder.Services.AddCors(options =>

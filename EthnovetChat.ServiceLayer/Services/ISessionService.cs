@@ -9,6 +9,7 @@ namespace EthnovetChat.ServiceLayer.Services
         void RecordTurn(string sessionId, string userMessage, string aiResponse, string? animal, string language);
         bool ClearSession(string sessionId);
         ChatSession? GetSession(string sessionId);
+        IReadOnlyList<ChatSession> GetAllSessions();
     }
 }
 
