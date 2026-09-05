@@ -12,6 +12,15 @@ namespace EthnovetChat.ServiceLayer
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
 
+            // Configure forwarded headers for cloud reverse proxies (Render, Cloudflare, etc.)
+            builder.Services.Configure<Microsoft.AspNetCore.Builder.ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor |
+                                           Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto;
+                options.KnownIPNetworks.Clear();
+                options.KnownProxies.Clear();
+            });
+
             // Register EthnoVet Core Services
             builder.Services.AddSingleton<EthnovetChat.DataAccessLayer.Repositories.IEthnovetRepository, EthnovetChat.DataAccessLayer.Repositories.EthnovetRepository>();
             builder.Services.AddSingleton<EthnovetChat.ServiceLayer.Services.ISessionService, EthnovetChat.ServiceLayer.Services.SessionService>();
@@ -38,6 +47,8 @@ namespace EthnovetChat.ServiceLayer
             }
 
             var app = builder.Build();
+
+            app.UseForwardedHeaders();
 
             // Enable Swagger / OpenAPI for easy cloud testing and documentation
             app.MapOpenApi();
