@@ -25,9 +25,11 @@ namespace EthnovetChat.ServiceLayer
             });
 
             // Configure Neon.tech PostgreSQL Database (with local in-memory fallback if not yet set)
-            var neonConn = builder.Configuration.GetConnectionString("NeonPostgres")
+            var rawNeonConn = builder.Configuration.GetConnectionString("NeonPostgres")
                 ?? Environment.GetEnvironmentVariable("ConnectionStrings__NeonPostgres")
                 ?? Environment.GetEnvironmentVariable("DATABASE_URL");
+
+            var neonConn = ParseNeonConnectionString(rawNeonConn);
 
             if (!string.IsNullOrWhiteSpace(neonConn) && !neonConn.Contains("YOUR_NEON_"))
             {
@@ -110,6 +112,37 @@ namespace EthnovetChat.ServiceLayer
             app.MapControllers();
 
             app.Run();
+        }
+
+        private static string? ParseNeonConnectionString(string? rawConn)
+        {
+            if (string.IsNullOrWhiteSpace(rawConn)) return null;
+
+            if (rawConn.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase) ||
+                rawConn.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase))
+            {
+                try
+                {
+                    var uri = new Uri(rawConn);
+                    var userInfo = uri.UserInfo.Split(':', 2);
+                    var builder = new Npgsql.NpgsqlConnectionStringBuilder
+                    {
+                        Host = uri.Host,
+                        Port = uri.Port > 0 ? uri.Port : 5432,
+                        Username = Uri.UnescapeDataString(userInfo[0]),
+                        Password = userInfo.Length > 1 ? Uri.UnescapeDataString(userInfo[1]) : "",
+                        Database = uri.AbsolutePath.TrimStart('/'),
+                        SslMode = Npgsql.SslMode.Require
+                    };
+                    return builder.ConnectionString;
+                }
+                catch
+                {
+                    return rawConn;
+                }
+            }
+
+            return rawConn;
         }
     }
 }
