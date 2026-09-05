@@ -1,5 +1,9 @@
-# 🌿 EthnoVet Chat
+# 🌿 EthnoVet Chat (Niju App)
 
+**EthnoVet Chat** (also known as **Niju App** or **Niju Chat App**) is an intelligent, clinically safe, bilingual AI assistant for traditional veterinary livestock healthcare created by **Niju**.
+
+[![Author](https://img.shields.io/badge/Author-Niju-059669?style=flat&logo=github)](https://github.com/Niju-2004)
+[![App](https://img.shields.io/badge/App-Niju_Chat_App-emerald?style=flat)](https://ethnovet.vercel.app/)
 [![.NET 10](https://img.shields.io/badge/.NET-10.0-512BD4?style=flat&logo=dotnet)](https://dotnet.microsoft.com/)
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=flat&logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat&logo=typescript)](https://www.typescriptlang.org/)
@@ -8,8 +12,13 @@
 [![Google Gemini](https://img.shields.io/badge/AI-Google_Gemini_RAG-4285F4?style=flat&logo=google)](https://ai.google.dev/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat&logo=docker)](https://www.docker.com/)
 
-> **பாரம்பரிய மூலிகை கால்நடை மருத்துவ வழிகாட்டி**  
+> **பாரம்பரிய மூலிகை கால்நடை மருத்துவ வழிகாட்டி — Niju App**  
 > An ultra-responsive, clinically safe, bilingual (English & தமிழ்) AI assistant for **Traditional Ethnoveterinary Practices (EVP)** powered by **.NET 10**, **Google Gemini AI**, **Server-Sent Events (SSE) Streaming**, **Neon.tech PostgreSQL**, and **React + Vite + TailwindCSS**.
+
+---
+
+### 🏷️ Keywords & Tags
+`niju` • `niju app` • `niju chat app` • `ethnovet` • `ethnovet chat` • `niju veterinary` • `traditional ethnoveterinary practices` • `evp` • `herbal livestock care` • `tamil veterinary ai` • `cow bloat remedy` • `goat diarrhea`
 
 ---
 

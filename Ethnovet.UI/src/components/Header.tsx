@@ -1,5 +1,5 @@
 import React from 'react';
-import { Leaf, RotateCcw, Globe, Sparkles, Sun, Moon, ShieldCheck, User, Clock, LogOut, LogIn } from 'lucide-react';
+import { Leaf, RotateCcw, Globe, Sparkles, Sun, Moon, ShieldCheck, User, Clock, LogOut, LogIn, BookOpen, MessageSquare } from 'lucide-react';
 import type { User as UserType } from '../types';
 
 interface HeaderProps {
@@ -15,6 +15,8 @@ interface HeaderProps {
   onOpenAuth: (mode: 'login' | 'register') => void;
   onOpenHistory: () => void;
   onLogout: () => void;
+  currentView?: 'chat' | 'guide';
+  onToggleView?: (view: 'chat' | 'guide') => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -30,6 +32,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAuth,
   onOpenHistory,
   onLogout,
+  currentView = 'chat',
+  onToggleView,
 }) => {
   return (
     <header className="sticky top-0 z-30 bg-emerald-800 dark:bg-slate-900 text-white shadow-md border-b border-emerald-700/50 dark:border-slate-800 transition-colors duration-200">
@@ -57,6 +61,26 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Actions */}
         <div className="flex items-center gap-2 sm:gap-2.5">
+          {/* Guide / Chat View Switcher */}
+          {onToggleView && (
+            <button
+              onClick={() => onToggleView(currentView === 'guide' ? 'chat' : 'guide')}
+              title={currentView === 'guide' ? 'Open Chat Consultation' : 'About & Capabilities'}
+              className="px-2.5 py-1.5 bg-emerald-700/80 dark:bg-slate-800 text-emerald-100 hover:text-white hover:bg-emerald-600 dark:hover:bg-slate-700 rounded-lg border border-emerald-600/50 dark:border-slate-700 text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs"
+            >
+              {currentView === 'guide' ? (
+                <>
+                  <MessageSquare className="w-3.5 h-3.5 text-emerald-300" />
+                  <span className="hidden sm:inline">{language === 'ta' ? 'ஆலோசனை அரட்டை' : 'Chat'}</span>
+                </>
+              ) : (
+                <>
+                  <BookOpen className="w-3.5 h-3.5 text-amber-300" />
+                  <span className="hidden sm:inline">{language === 'ta' ? 'அறிமுகம் & வழிகாட்டி' : 'About & Guide'}</span>
+                </>
+              )}
+            </button>
+          )}
           {/* History Button (When logged in) */}
           {currentUser && (
             <button

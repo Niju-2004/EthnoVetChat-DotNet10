@@ -8,6 +8,7 @@ import { AdminPortal } from './components/Admin/AdminPortal';
 import { RegisterWizard } from './components/Auth/RegisterWizard';
 import { LoginModal } from './components/Auth/LoginModal';
 import { ChatHistoryDrawer } from './components/ChatHistoryDrawer';
+import { LandingPage } from './components/LandingPage';
 import type { ChatMessage, User as UserType, Remedy } from './types';
 import { Sparkles, AlertCircle, BookmarkPlus, Lock, LogIn, UserCheck } from 'lucide-react';
 
@@ -94,6 +95,11 @@ export const App: React.FC = () => {
   const [isRegisterOpen, setIsRegisterOpen] = useState<boolean>(false);
   const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState<boolean>(false);
+
+  // Active View State: default to 'guide' for new/unauthenticated visitors so they understand what the app does; 'chat' if logged in
+  const [activeView, setActiveView] = useState<'chat' | 'guide'>(() => {
+    return typeof localStorage !== 'undefined' && localStorage.getItem(USER_TOKEN_KEY) ? 'chat' : 'guide';
+  });
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -371,6 +377,18 @@ export const App: React.FC = () => {
     if (user.preferredLanguage) {
       setLanguage(user.preferredLanguage);
     }
+    setActiveView('chat');
+  };
+
+  const handleStartConsultation = (initialPrompt?: string) => {
+    setActiveView('chat');
+    if (!currentUser || !userToken) {
+      setIsLoginOpen(true);
+      return;
+    }
+    if (initialPrompt) {
+      handleSendMessage(initialPrompt);
+    }
   };
 
   const handleUserLogout = () => {
@@ -432,156 +450,172 @@ export const App: React.FC = () => {
         }}
         onOpenHistory={() => setIsHistoryOpen(true)}
         onLogout={handleUserLogout}
+        currentView={activeView}
+        onToggleView={setActiveView}
       />
 
-      {/* Animal Quick Filter Pill Bar */}
-      <AnimalSelector
-        selectedAnimal={selectedAnimal}
-        onSelectAnimal={setSelectedAnimal}
-        language={language}
-      />
-
-      {/* Main Chat Scroll Area */}
-      <main className="flex-1 max-w-4xl w-full mx-auto px-4 py-4 flex flex-col justify-between">
-        <div className="space-y-4">
-          {/* Active Session Info Pill */}
-          <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 bg-white/60 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800 rounded-lg px-3 py-1.5 shadow-2xs">
-            <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="font-medium">
-                {currentUser ? (
-                  <span>
-                    {language === 'ta' ? 'விவசாயி கணக்கு (கிளவுட் சேமிப்பு):' : 'Authenticated Cloud Session:'}
-                  </span>
-                ) : (
-                  <span>
-                    {language === 'ta' ? 'உள்நுழைவு தேவை:' : 'Sign In Required:'}
-                  </span>
-                )}
-              </span>
-              <code className="text-[10px] text-slate-600 dark:text-slate-300 font-mono bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded">
-                {sessionId ? sessionId.substring(0, 8) + '...' : 'initializing'}
-              </code>
-            </div>
-
-            <div className="flex items-center gap-2">
-              {!currentUser && (
-                <button
-                  onClick={() => setIsRegisterOpen(true)}
-                  className="hidden sm:inline-flex items-center gap-1 text-[10px] text-emerald-700 dark:text-emerald-400 hover:underline font-semibold cursor-pointer"
-                >
-                  <BookmarkPlus className="w-3 h-3" />
-                  <span>{language === 'ta' ? 'கணக்கில் சேமிக்க பதிவு செய்' : 'Sign up to save permanently'}</span>
-                </button>
-              )}
-              {selectedAnimal && (
-                <span className="bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-medium px-2 py-0.5 rounded-full capitalize text-[10px]">
-                  {selectedAnimal}
-                </span>
-              )}
-            </div>
-          </div>
-
-          {/* Messages */}
-          {messages.map((msg) => (
-            <MessageItem key={msg.id} message={msg} language={language} />
-          ))}
-
-          {/* Loading Indicator */}
-          {isLoading && (
-            <div className="flex items-start gap-3 my-4">
-              <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-xs shrink-0 mt-0.5 animate-pulse">
-                <Sparkles className="w-4 h-4 text-amber-300" />
-              </div>
-              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl rounded-tl-xs px-4 py-3 shadow-xs flex items-center gap-2">
-                <div className="flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce [animation-delay:-0.3s]"></span>
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce [animation-delay:-0.15s]"></span>
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce"></span>
-                </div>
-                <span className="text-xs text-slate-500 dark:text-slate-400 font-medium ml-1">
-                  {language === 'ta'
-                    ? 'மூலிகை தரவுத்தளத்தில் தேடுகிறது...'
-                    : 'Searching remedies & formulating advice...'}
-                </span>
-              </div>
-            </div>
-          )}
-
-          {/* Error Banner */}
-          {error && (
-            <div className="p-3 bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-900 rounded-xl flex items-center justify-between text-xs text-red-800 dark:text-red-300">
-              <div className="flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400 shrink-0" />
-                <span>{error}</span>
-              </div>
-              <button
-                onClick={() => setError(null)}
-                className="text-red-700 dark:text-red-400 hover:text-red-900 font-semibold underline text-xs cursor-pointer"
-              >
-                Dismiss
-              </button>
-            </div>
-          )}
-
-          <div ref={messagesEndRef} />
-        </div>
-      </main>
-
-      {/* Input Section - Authenticated Farmers Only */}
-      {currentUser ? (
-        <ChatInput
-          onSendMessage={handleSendMessage}
-          isLoading={isLoading}
+      {activeView === 'guide' ? (
+        <LandingPage
           language={language}
-          selectedAnimal={selectedAnimal}
+          currentUser={currentUser}
+          onStartConsultation={handleStartConsultation}
+          onOpenAuth={(mode) => {
+            if (mode === 'register') setIsRegisterOpen(true);
+            else setIsLoginOpen(true);
+          }}
         />
       ) : (
-        <div className="max-w-4xl w-full mx-auto px-4 pb-4">
-          <div className="bg-white dark:bg-slate-900 border-2 border-dashed border-emerald-500/40 dark:border-emerald-600/40 rounded-2xl p-5 shadow-sm text-center flex flex-col items-center justify-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 flex items-center justify-center shadow-xs">
-              <Lock className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 m-0">
-                {language === 'ta'
-                  ? 'கால்நடை மருத்துவ ஆலோசனை பெற உள்நுழையவும்'
-                  : 'Farmer Sign In Required'}
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto mt-1 mb-0">
-                {language === 'ta'
-                  ? 'உங்கள் கால்நடைகளுக்கான மூலிகை மருத்துவ ஆலோசனையைப் பெறவும், முந்தைய மருத்துவக் குறிப்புகளைப் பாதுகாப்பாகச் சேமிக்கவும் உள்நுழையவும் அல்லது புதிய பதிவை மேற்கொள்ளவும்.'
-                  : 'To consult the EthnoVet AI assistant, receive verified traditional remedies, and securely track your livestock treatment history, please sign in or register.'}
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
-              <button
-                onClick={() => setIsLoginOpen(true)}
-                className="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer flex items-center gap-1.5"
-              >
-                <LogIn className="w-4 h-4" />
-                <span>{language === 'ta' ? 'உள்நுழையவும்' : 'Sign In to Consult'}</span>
-              </button>
-              <button
-                onClick={() => setIsRegisterOpen(true)}
-                className="px-5 py-2.5 bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 rounded-xl text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5"
-              >
-                <UserCheck className="w-4 h-4" />
-                <span>{language === 'ta' ? 'புதிய விவசாயி பதிவு' : 'Register as New Farmer'}</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+        <>
+          {/* Animal Quick Filter Pill Bar */}
+          <AnimalSelector
+            selectedAnimal={selectedAnimal}
+            onSelectAnimal={setSelectedAnimal}
+            language={language}
+          />
 
-      {/* Global Disclaimer Footer */}
-      <footer className="text-center py-2 px-4 text-[11px] text-slate-500 dark:text-slate-400 border-t border-slate-200/80 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-900/50 transition-colors duration-200">
-        <p className="m-0">
-          {language === 'ta'
-            ? '⚠️ பாரம்பரிய மூலிகை மருத்துவ முறைகள் முதலுதவிக்காக மட்டுமே. அவசர மற்றும் தீவிர நிலைகளில் உடனடியாக கால்நடை மருத்துவரை அணுகவும்.'
-            : '⚠️ Traditional remedies are supportive practices for common conditions. In emergencies or severe acute diseases, consult a registered veterinarian.'}
-        </p>
-      </footer>
+          {/* Main Chat Scroll Area */}
+          <main className="flex-1 max-w-4xl w-full mx-auto px-4 py-4 flex flex-col justify-between">
+            <div className="space-y-4">
+              {/* Active Session Info Pill */}
+              <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 bg-white/60 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800 rounded-lg px-3 py-1.5 shadow-2xs">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span className="font-medium">
+                    {currentUser ? (
+                      <span>
+                        {language === 'ta' ? 'விவசாயி கணக்கு (கிளவுட் சேமிப்பு):' : 'Authenticated Cloud Session:'}
+                      </span>
+                    ) : (
+                      <span>
+                        {language === 'ta' ? 'உள்நுழைவு தேவை:' : 'Sign In Required:'}
+                      </span>
+                    )}
+                  </span>
+                  <code className="text-[10px] text-slate-600 dark:text-slate-300 font-mono bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded">
+                    {sessionId ? sessionId.substring(0, 8) + '...' : 'initializing'}
+                  </code>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  {!currentUser && (
+                    <button
+                      onClick={() => setIsRegisterOpen(true)}
+                      className="hidden sm:inline-flex items-center gap-1 text-[10px] text-emerald-700 dark:text-emerald-400 hover:underline font-semibold cursor-pointer"
+                    >
+                      <BookmarkPlus className="w-3 h-3" />
+                      <span>{language === 'ta' ? 'கணக்கில் சேமிக்க பதிவு செய்' : 'Sign up to save permanently'}</span>
+                    </button>
+                  )}
+                  {selectedAnimal && (
+                    <span className="bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-medium px-2 py-0.5 rounded-full capitalize text-[10px]">
+                      {selectedAnimal}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Messages */}
+              {messages.map((msg) => (
+                <MessageItem key={msg.id} message={msg} language={language} />
+              ))}
+
+              {/* Loading Indicator */}
+              {isLoading && (
+                <div className="flex items-start gap-3 my-4">
+                  <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-xs shrink-0 mt-0.5 animate-pulse">
+                    <Sparkles className="w-4 h-4 text-amber-300" />
+                  </div>
+                  <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl rounded-tl-xs px-4 py-3 shadow-xs flex items-center gap-2">
+                    <div className="flex items-center gap-1">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce [animation-delay:-0.3s]"></span>
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce [animation-delay:-0.15s]"></span>
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce"></span>
+                    </div>
+                    <span className="text-xs text-slate-500 dark:text-slate-400 font-medium ml-1">
+                      {language === 'ta'
+                        ? 'மூலிகை தரவுத்தளத்தில் தேடுகிறது...'
+                        : 'Searching remedies & formulating advice...'}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {/* Error Banner */}
+              {error && (
+                <div className="p-3 bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-900 rounded-xl flex items-center justify-between text-xs text-red-800 dark:text-red-300">
+                  <div className="flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400 shrink-0" />
+                    <span>{error}</span>
+                  </div>
+                  <button
+                    onClick={() => setError(null)}
+                    className="text-red-700 dark:text-red-400 hover:text-red-900 font-semibold underline text-xs cursor-pointer"
+                  >
+                    Dismiss
+                  </button>
+                </div>
+              )}
+
+              <div ref={messagesEndRef} />
+            </div>
+          </main>
+
+          {/* Input Section - Authenticated Farmers Only */}
+          {currentUser ? (
+            <ChatInput
+              onSendMessage={handleSendMessage}
+              isLoading={isLoading}
+              language={language}
+              selectedAnimal={selectedAnimal}
+            />
+          ) : (
+            <div className="max-w-4xl w-full mx-auto px-4 pb-4">
+              <div className="bg-white dark:bg-slate-900 border-2 border-dashed border-emerald-500/40 dark:border-emerald-600/40 rounded-2xl p-5 shadow-sm text-center flex flex-col items-center justify-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 flex items-center justify-center shadow-xs">
+                  <Lock className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 m-0">
+                    {language === 'ta'
+                      ? 'கால்நடை மருத்துவ ஆலோசனை பெற உள்நுழையவும்'
+                      : 'Farmer Sign In Required'}
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto mt-1 mb-0">
+                    {language === 'ta'
+                      ? 'உங்கள் கால்நடைகளுக்கான மூலிகை மருத்துவ ஆலோசனையைப் பெறவும், முந்தைய மருத்துவக் குறிப்புகளைப் பாதுகாப்பாகச் சேமிக்கவும் உள்நுழையவும் அல்லது புதிய பதிவை மேற்கொள்ளவும்.'
+                      : 'To consult the EthnoVet AI assistant, receive verified traditional remedies, and securely track your livestock treatment history, please sign in or register.'}
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+                  <button
+                    onClick={() => setIsLoginOpen(true)}
+                    className="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer flex items-center gap-1.5"
+                  >
+                    <LogIn className="w-4 h-4" />
+                    <span>{language === 'ta' ? 'உள்நுழையவும்' : 'Sign In to Consult'}</span>
+                  </button>
+                  <button
+                    onClick={() => setIsRegisterOpen(true)}
+                    className="px-5 py-2.5 bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 rounded-xl text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5"
+                  >
+                    <UserCheck className="w-4 h-4" />
+                    <span>{language === 'ta' ? 'புதிய விவசாயி பதிவு' : 'Register as New Farmer'}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Global Disclaimer Footer */}
+          <footer className="text-center py-2 px-4 text-[11px] text-slate-500 dark:text-slate-400 border-t border-slate-200/80 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-900/50 transition-colors duration-200">
+            <p className="m-0">
+              {language === 'ta'
+                ? '⚠️ பாரம்பரிய மூலிகை மருத்துவ முறைகள் முதலுதவிக்காக மட்டுமே. அவசர மற்றும் தீவிர நிலைகளில் உடனடியாக கால்நடை மருத்துவரை அணுகவும்.'
+                : '⚠️ Traditional remedies are supportive practices for common conditions. In emergencies or severe acute diseases, consult a registered veterinarian.'}
+            </p>
+          </footer>
+        </>
+      )}
 
       {/* 3-Stage Farmer Registration Wizard */}
       <RegisterWizard
