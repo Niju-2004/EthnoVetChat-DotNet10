@@ -56,8 +56,24 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="sticky top-0 z-30 bg-emerald-800 dark:bg-slate-900 text-white shadow-md border-b border-emerald-700/50 dark:border-slate-800 transition-colors duration-200">
       <div className="max-w-5xl mx-auto px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between">
-        {/* Branding */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        {/* Left Side: History Slide Drawer Button + Branding */}
+        <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+          {/* History Sidebar Button (Slide from left) */}
+          <button
+            onClick={() => {
+              onOpenHistory();
+              setIsMobileMenuOpen(false);
+            }}
+            title={language === 'ta' ? 'முந்தைய உரையாடல்கள் (History)' : 'Past Consultations (History)'}
+            className="p-1.5 sm:px-2.5 sm:py-1.5 bg-emerald-700/80 dark:bg-slate-800 text-emerald-100 hover:text-white rounded-lg border border-emerald-600/50 dark:border-slate-700 text-xs font-semibold cursor-pointer flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all"
+            aria-label="Open Conversation History"
+          >
+            <Clock className="w-4 h-4 text-emerald-300" />
+            <span className="hidden sm:inline text-xs font-medium">
+              {language === 'ta' ? 'வரலாறு' : 'History'}
+            </span>
+          </button>
+
           <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-emerald-700/80 dark:bg-emerald-950/80 border border-emerald-500/30 dark:border-emerald-800/80 flex items-center justify-center shadow-inner shrink-0">
             <Leaf className="w-4 h-4 sm:w-6 sm:h-6 text-emerald-300 dark:text-emerald-400" />
           </div>
@@ -167,17 +183,6 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
           )}
 
-          {/* History Button (When logged in) */}
-          {currentUser && (
-            <button
-              onClick={onOpenHistory}
-              title="View Past Consultations"
-              className="p-2 bg-emerald-700/70 dark:bg-slate-800 text-emerald-100 dark:text-emerald-300 hover:text-white hover:bg-emerald-600 dark:hover:bg-slate-700 rounded-lg border border-emerald-600/50 dark:border-slate-700 transition-all cursor-pointer flex items-center gap-1.5"
-            >
-              <Clock className="w-4 h-4" />
-              <span className="text-xs font-semibold">History</span>
-            </button>
-          )}
 
           {/* User Account / Sign In */}
           {currentUser ? (

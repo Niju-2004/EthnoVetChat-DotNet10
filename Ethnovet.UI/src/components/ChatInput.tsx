@@ -111,10 +111,16 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
   };
 
+  const handleFocus = () => {
+    setTimeout(() => {
+      textareaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 250);
+  };
+
   const currentSuggestions = language === 'ta' ? suggestionsTa : suggestionsEn;
 
   return (
-    <div className="sticky bottom-0 z-20 bg-gradient-to-t from-slate-50 via-slate-50/95 to-transparent dark:from-slate-950 dark:via-slate-950/95 pt-2 pb-2 sm:pb-4 px-2.5 sm:px-4 transition-colors duration-200">
+    <div className="w-full pt-1.5 pb-2 sm:pb-3 px-2.5 sm:px-4">
       <div className="max-w-4xl mx-auto space-y-1.5 sm:space-y-2">
         {/* Quick Suggestion Pills */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar scroll-smooth touch-pan-x">
@@ -153,6 +159,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             value={input}
             onChange={handleInput}
             onKeyDown={handleKeyDown}
+            onFocus={handleFocus}
             placeholder={
               language === 'ta'
                 ? selectedAnimal

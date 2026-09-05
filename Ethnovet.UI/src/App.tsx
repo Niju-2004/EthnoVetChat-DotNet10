@@ -432,50 +432,56 @@ export const App: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
+    <div className="flex flex-col h-[100dvh] max-h-[100dvh] bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200 overflow-hidden">
       {/* Header */}
-      <Header
-        language={language}
-        onLanguageChange={handleLanguageChange}
-        theme={theme}
-        onToggleTheme={handleToggleTheme}
-        onOpenAdmin={handleOpenAdmin}
-        isAdminLoggedIn={!!adminToken}
-        onNewConsultation={handleNewConsultation}
-        isClearing={isClearing}
-        currentUser={currentUser}
-        onOpenAuth={(mode) => {
-          if (mode === 'register') setIsRegisterOpen(true);
-          else setIsLoginOpen(true);
-        }}
-        onOpenHistory={() => setIsHistoryOpen(true)}
-        onLogout={handleUserLogout}
-        currentView={activeView}
-        onToggleView={setActiveView}
-      />
-
-      {activeView === 'guide' ? (
-        <LandingPage
+      <div className="shrink-0 z-30">
+        <Header
           language={language}
+          onLanguageChange={handleLanguageChange}
+          theme={theme}
+          onToggleTheme={handleToggleTheme}
+          onOpenAdmin={handleOpenAdmin}
+          isAdminLoggedIn={!!adminToken}
+          onNewConsultation={handleNewConsultation}
+          isClearing={isClearing}
           currentUser={currentUser}
-          onStartConsultation={handleStartConsultation}
           onOpenAuth={(mode) => {
             if (mode === 'register') setIsRegisterOpen(true);
             else setIsLoginOpen(true);
           }}
+          onOpenHistory={() => setIsHistoryOpen(true)}
+          onLogout={handleUserLogout}
+          currentView={activeView}
+          onToggleView={setActiveView}
         />
-      ) : (
-        <>
-          {/* Animal Quick Filter Pill Bar */}
-          <AnimalSelector
-            selectedAnimal={selectedAnimal}
-            onSelectAnimal={setSelectedAnimal}
+      </div>
+
+      {activeView === 'guide' ? (
+        <div className="flex-1 overflow-y-auto min-h-0">
+          <LandingPage
             language={language}
+            currentUser={currentUser}
+            onStartConsultation={handleStartConsultation}
+            onOpenAuth={(mode) => {
+              if (mode === 'register') setIsRegisterOpen(true);
+              else setIsLoginOpen(true);
+            }}
           />
+        </div>
+      ) : (
+        <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+          {/* Animal Quick Filter Pill Bar */}
+          <div className="shrink-0 z-10 border-b border-slate-200/50 dark:border-slate-800/50 bg-white/50 dark:bg-slate-900/50 backdrop-blur-xs">
+            <AnimalSelector
+              selectedAnimal={selectedAnimal}
+              onSelectAnimal={setSelectedAnimal}
+              language={language}
+            />
+          </div>
 
           {/* Main Chat Scroll Area */}
-          <main className="flex-1 max-w-4xl w-full mx-auto px-2.5 sm:px-4 py-2.5 sm:py-4 flex flex-col justify-between">
-            <div className="space-y-3 sm:space-y-4">
+          <main className="flex-1 overflow-y-auto min-h-0 w-full">
+            <div className="max-w-4xl mx-auto px-2.5 sm:px-4 py-2.5 sm:py-3 space-y-3 sm:space-y-4">
               {/* Active Session Info Pill */}
               <div className="flex flex-wrap items-center justify-between gap-1.5 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 bg-white/70 dark:bg-slate-900/70 border border-slate-200/70 dark:border-slate-800 rounded-lg px-2.5 sm:px-3 py-1.5 shadow-2xs">
                 <div className="flex items-center gap-1.5 truncate">
@@ -567,61 +573,63 @@ export const App: React.FC = () => {
             </div>
           </main>
 
-          {/* Input Section - Authenticated Farmers Only */}
-          {currentUser ? (
-            <ChatInput
-              onSendMessage={handleSendMessage}
-              isLoading={isLoading}
-              language={language}
-              selectedAnimal={selectedAnimal}
-            />
-          ) : (
-            <div className="max-w-4xl w-full mx-auto px-2.5 sm:px-4 pb-3 sm:pb-4">
-              <div className="bg-white dark:bg-slate-900 border-2 border-dashed border-emerald-500/40 dark:border-emerald-600/40 rounded-2xl p-4 sm:p-5 shadow-sm text-center flex flex-col items-center justify-center gap-2.5 sm:gap-3">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 flex items-center justify-center shadow-xs">
-                  <Lock className="w-5 h-5 sm:w-6 sm:h-6" />
-                </div>
-                <div>
-                  <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 m-0">
-                    {language === 'ta'
-                      ? 'கால்நடை மருத்துவ ஆலோசனை பெற உள்நுழையவும்'
-                      : 'Farmer Sign In Required'}
-                  </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto mt-1 mb-0 leading-relaxed">
-                    {language === 'ta'
-                      ? 'உங்கள் கால்நடைகளுக்கான மூலிகை மருத்துவ ஆலோசனையைப் பெறவும், முந்தைய மருத்துவக் குறிப்புகளைப் பாதுகாப்பாகச் சேமிக்கவும் உள்நுழையவும் அல்லது புதிய பதிவை மேற்கொள்ளவும்.'
-                      : 'To consult the EthnoVet AI assistant, receive verified traditional remedies, and securely track your livestock treatment history, please sign in or register.'}
-                  </p>
-                </div>
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2 sm:gap-3 w-full sm:w-auto pt-1">
-                  <button
-                    onClick={() => setIsLoginOpen(true)}
-                    className="w-full sm:w-auto px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5 active:scale-95"
-                  >
-                    <LogIn className="w-4 h-4" />
-                    <span>{language === 'ta' ? 'உள்நுழையவும்' : 'Sign In to Consult'}</span>
-                  </button>
-                  <button
-                    onClick={() => setIsRegisterOpen(true)}
-                    className="w-full sm:w-auto px-5 py-2.5 bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 rounded-xl text-xs font-semibold transition-colors cursor-pointer flex items-center justify-center gap-1.5 active:scale-95"
-                  >
-                    <UserCheck className="w-4 h-4" />
-                    <span>{language === 'ta' ? 'புதிய விவசாயி பதிவு' : 'Register as New Farmer'}</span>
-                  </button>
+          {/* Bottom Docked Section: Input & Disclaimer Footer */}
+          <div className="shrink-0 border-t border-slate-200/80 dark:border-slate-800 bg-slate-50/95 dark:bg-slate-950/95 backdrop-blur-xs z-20">
+            {currentUser ? (
+              <ChatInput
+                onSendMessage={handleSendMessage}
+                isLoading={isLoading}
+                language={language}
+                selectedAnimal={selectedAnimal}
+              />
+            ) : (
+              <div className="max-w-4xl w-full mx-auto px-2.5 sm:px-4 py-2.5 sm:py-3">
+                <div className="bg-white dark:bg-slate-900 border-2 border-dashed border-emerald-500/40 dark:border-emerald-600/40 rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-xs text-center flex flex-col items-center justify-center gap-2">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 flex items-center justify-center shadow-2xs">
+                    <Lock className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 m-0">
+                      {language === 'ta'
+                        ? 'கால்நடை மருத்துவ ஆலோசனை பெற உள்நுழையவும்'
+                        : 'Farmer Sign In Required'}
+                    </h3>
+                    <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto mt-0.5 mb-0 leading-snug">
+                      {language === 'ta'
+                        ? 'உங்கள் கால்நடைகளுக்கான மூலிகை மருத்துவ ஆலோசனையைப் பெறவும், முந்தைய மருத்துவக் குறிப்புகளைப் பாதுகாப்பாகச் சேமிக்கவும் உள்நுழையவும்.'
+                        : 'To consult the EthnoVet AI assistant and securely track your treatment history, please sign in or register.'}
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-center gap-2 w-full sm:w-auto pt-0.5">
+                    <button
+                      onClick={() => setIsLoginOpen(true)}
+                      className="flex-1 sm:flex-initial px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5 active:scale-95"
+                    >
+                      <LogIn className="w-3.5 h-3.5" />
+                      <span>{language === 'ta' ? 'உள்நுழையவும்' : 'Sign In'}</span>
+                    </button>
+                    <button
+                      onClick={() => setIsRegisterOpen(true)}
+                      className="flex-1 sm:flex-initial px-4 py-2 bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 rounded-lg text-xs font-semibold transition-colors cursor-pointer flex items-center justify-center gap-1.5 active:scale-95"
+                    >
+                      <UserCheck className="w-3.5 h-3.5" />
+                      <span>{language === 'ta' ? 'பதிவு' : 'Register'}</span>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Global Disclaimer Footer */}
-          <footer className="text-center py-2 px-3 sm:px-4 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 border-t border-slate-200/80 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-900/50 transition-colors duration-200">
-            <p className="m-0 leading-tight sm:leading-normal">
-              {language === 'ta'
-                ? '⚠️ பாரம்பரிய மூலிகை மருத்துவ முறைகள் முதலுதவிக்காக மட்டுமே. அவசர மற்றும் தீவிர நிலைகளில் உடனடியாக கால்நடை மருத்துவரை அணுகவும்.'
-                : '⚠️ Traditional remedies are supportive practices for common conditions. In emergencies or severe acute diseases, consult a registered veterinarian.'}
-            </p>
-          </footer>
-        </>
+            {/* Global Disclaimer Footer */}
+            <footer className="text-center py-1.5 px-2.5 sm:px-4 text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400 border-t border-slate-200/60 dark:border-slate-800/60 bg-slate-100/40 dark:bg-slate-900/40">
+              <p className="m-0 leading-tight">
+                {language === 'ta'
+                  ? '⚠️ பாரம்பரிய மூலிகை மருத்துவ முறைகள் முதலுதவிக்காக மட்டுமே. தீவிர நிலைகளில் கால்நடை மருத்துவரை அணுகவும்.'
+                  : '⚠️ Traditional remedies are supportive practices for common conditions. In emergencies, consult a veterinarian.'}
+              </p>
+            </footer>
+          </div>
+        </div>
       )}
 
       {/* 3-Stage Farmer Registration Wizard */}
@@ -657,6 +665,11 @@ export const App: React.FC = () => {
         apiBaseUrl={API_BASE}
         userToken={userToken}
         activeSessionId={sessionId}
+        onOpenAuth={(mode) => {
+          if (mode === 'register') setIsRegisterOpen(true);
+          else setIsLoginOpen(true);
+        }}
+        language={language}
       />
 
       {/* Admin Login Modal */}

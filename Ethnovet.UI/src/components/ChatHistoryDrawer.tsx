@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, MessageSquare, Plus, Trash2, Clock, Calendar, RefreshCw } from 'lucide-react';
+import { X, MessageSquare, Plus, Trash2, Clock, Calendar, RefreshCw, LogIn } from 'lucide-react';
 import type { UserSessionSummary } from '../types';
 
 interface ChatHistoryDrawerProps {
@@ -10,6 +10,8 @@ interface ChatHistoryDrawerProps {
   apiBaseUrl: string;
   userToken: string | null;
   activeSessionId: string;
+  onOpenAuth?: (mode: 'login' | 'register') => void;
+  language?: 'en' | 'ta';
 }
 
 export const ChatHistoryDrawer: React.FC<ChatHistoryDrawerProps> = ({
@@ -20,6 +22,8 @@ export const ChatHistoryDrawer: React.FC<ChatHistoryDrawerProps> = ({
   apiBaseUrl,
   userToken,
   activeSessionId,
+  onOpenAuth,
+  language = 'en',
 }) => {
   const [sessions, setSessions] = useState<UserSessionSummary[]>([]);
   const [loading, setLoading] = useState(false);
@@ -79,13 +83,21 @@ export const ChatHistoryDrawer: React.FC<ChatHistoryDrawerProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-start bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="w-full max-w-sm bg-white dark:bg-slate-900 h-full shadow-2xl flex flex-col border-r border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100">
+    <div
+      className="fixed inset-0 z-50 flex justify-start bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-xs sm:max-w-sm bg-white dark:bg-slate-900 h-full shadow-2xl flex flex-col border-r border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 animate-in slide-in-from-left duration-200"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Drawer Header */}
         <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Clock className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-            <h3 className="font-bold text-sm m-0">My Consultations</h3>
+            <h3 className="font-bold text-sm m-0">
+              {language === 'ta' ? 'முந்தைய ஆலோசனைகள்' : 'My Consultations'}
+            </h3>
           </div>
           <button
             onClick={onClose}
@@ -102,16 +114,42 @@ export const ChatHistoryDrawer: React.FC<ChatHistoryDrawerProps> = ({
               onNewChat();
               onClose();
             }}
-            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold shadow-xs transition-all cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold shadow-xs transition-all cursor-pointer active:scale-95"
           >
             <Plus className="w-4 h-4" />
-            <span>Start New Consultation</span>
+            <span>{language === 'ta' ? 'புதிய ஆலோசனை தொடங்கு' : 'Start New Consultation'}</span>
           </button>
         </div>
 
         {/* Sessions List */}
         <div className="flex-1 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800 p-2 space-y-1">
-          {loading ? (
+          {!userToken ? (
+            <div className="p-6 text-center text-xs text-slate-400 space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 flex items-center justify-center mx-auto shadow-xs">
+                <Clock className="w-6 h-6" />
+              </div>
+              <h4 className="font-bold text-sm text-slate-800 dark:text-slate-200 m-0">
+                {language === 'ta' ? 'உள்நுழைவு தேவை' : 'Sign In Required'}
+              </h4>
+              <p className="text-[11px] text-slate-500 m-0 leading-relaxed">
+                {language === 'ta'
+                  ? 'உங்கள் முந்தைய கால்நடை ஆலோசனைகளைப் பார்க்கவும் தொடர்ந்து பேசவும் உள்நுழையவும்.'
+                  : 'Sign in to access and continue your saved consultation records across all devices.'}
+              </p>
+              {onOpenAuth && (
+                <button
+                  onClick={() => {
+                    onClose();
+                    onOpenAuth('login');
+                  }}
+                  className="px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-semibold shadow-xs cursor-pointer inline-flex items-center gap-1.5 active:scale-95"
+                >
+                  <LogIn className="w-3.5 h-3.5" />
+                  <span>{language === 'ta' ? 'உள்நுழையவும்' : 'Sign In to View'}</span>
+                </button>
+              )}
+            </div>
+          ) : loading ? (
             <div className="flex items-center justify-center p-8 text-xs text-slate-400">
               <RefreshCw className="w-4 h-4 animate-spin mr-2" />
               <span>Loading saved history...</span>
