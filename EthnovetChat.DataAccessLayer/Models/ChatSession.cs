@@ -7,6 +7,7 @@ namespace EthnovetChat.DataAccessLayer.Models
         public DateTime LastActiveAt { get; set; } = DateTime.UtcNow;
         public string? PersistedAnimal { get; set; }
         public string? PersistedLanguage { get; set; }
+        public Guid? UserId { get; set; }
         public List<ChatMessage> Messages { get; set; } = new();
 
         /// <summary>

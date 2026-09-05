@@ -51,10 +51,11 @@ namespace EthnovetChat.ServiceLayer.Controllers
             }
 
             var userId = GetAuthenticatedUserId();
-            if (userId.HasValue)
+            if (!userId.HasValue)
             {
-                request.UserId = userId.Value;
+                return Unauthorized(new { error = "Authentication required. Please sign in or register to consult the EthnoVet AI." });
             }
+            request.UserId = userId.Value;
 
             var response = await _chatService.ProcessChatAsync(request, cancellationToken);
             return Ok(response);
@@ -76,10 +77,14 @@ namespace EthnovetChat.ServiceLayer.Controllers
             }
 
             var userId = GetAuthenticatedUserId();
-            if (userId.HasValue)
+            if (!userId.HasValue)
             {
-                request.UserId = userId.Value;
+                Response.StatusCode = StatusCodes.Status401Unauthorized;
+                Response.Headers.Append("Content-Type", "application/json");
+                await Response.WriteAsync("{\"error\":\"Authentication required. Please sign in or register to consult the EthnoVet AI.\"}", cancellationToken);
+                return;
             }
+            request.UserId = userId.Value;
 
             Response.Headers.Append("Content-Type", "text/event-stream");
             Response.Headers.Append("Cache-Control", "no-cache");

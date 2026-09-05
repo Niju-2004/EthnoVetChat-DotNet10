@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Clock, User, Bot, RefreshCw } from 'lucide-react';
+import { Clock, User, Bot, RefreshCw, Search, ShieldCheck } from 'lucide-react';
 
 interface ChatMonitorProps {
   apiBaseUrl: string;
@@ -9,6 +9,11 @@ interface ChatMonitorProps {
 
 interface ChatSessionSummary {
   sessionId: string;
+  userId?: string | null;
+  username?: string | null;
+  userEmail?: string | null;
+  userRole?: string | null;
+  title?: string;
   createdAt: string;
   lastActiveAt: string;
   persistedAnimal: string | null;
@@ -28,6 +33,7 @@ export const ChatMonitor: React.FC<ChatMonitorProps> = ({
 }) => {
   const [sessions, setSessions] = useState<ChatSessionSummary[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
   const [selectedSession, setSelectedSession] = useState<ChatSessionSummary | null>(null);
 
   const fetchSessions = async () => {
@@ -42,6 +48,9 @@ export const ChatMonitor: React.FC<ChatMonitorProps> = ({
       setSessions(data);
       if (data.length > 0 && !selectedSession) {
         setSelectedSession(data[0]);
+      } else if (selectedSession) {
+        const updated = data.find((s: ChatSessionSummary) => s.sessionId === selectedSession.sessionId);
+        if (updated) setSelectedSession(updated);
       }
     } catch (err) {
       console.error(err);
@@ -65,35 +74,75 @@ export const ChatMonitor: React.FC<ChatMonitorProps> = ({
     return { label: 'Standard Triage', color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300' };
   };
 
+  const filteredSessions = sessions.filter((s) => {
+    const term = searchTerm.toLowerCase();
+    const uname = (s.username || '').toLowerCase();
+    const email = (s.userEmail || '').toLowerCase();
+    const sid = (s.sessionId || '').toLowerCase();
+    const title = (s.title || '').toLowerCase();
+    const anim = (s.persistedAnimal || '').toLowerCase();
+    return (
+      uname.includes(term) ||
+      email.includes(term) ||
+      sid.includes(term) ||
+      title.includes(term) ||
+      anim.includes(term)
+    );
+  });
+
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800">
+      {/* Header Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
         <div>
-          <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 m-0">Live Consultation Monitor</h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 m-0">Real-time audit of multi-turn veterinary conversations</p>
+          <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 m-0 flex items-center gap-2">
+            <ShieldCheck className="w-4 h-4 text-emerald-600" />
+            Farmer Consultation Audit
+          </h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 m-0">
+            Audit consultations by farmer username, registered email, and animal species
+          </p>
         </div>
-        <button
-          onClick={fetchSessions}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 rounded-lg text-xs font-medium cursor-pointer"
-        >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-          <span>Refresh</span>
-        </button>
+        <div className="flex items-center gap-2">
+          {/* Search filter */}
+          <div className="relative">
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              placeholder="Filter by farmer or animal..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-8 pr-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 focus:outline-emerald-500 w-48 sm:w-60"
+            />
+          </div>
+          <button
+            onClick={fetchSessions}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 rounded-lg text-xs font-medium cursor-pointer"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+            <span>Refresh</span>
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Session List */}
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-xs">
-          <div className="p-3 bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300">
-            Active Sessions ({sessions.length})
+          <div className="p-3 bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center justify-between">
+            <span>Farmer Consultations ({filteredSessions.length})</span>
+            {searchTerm && (
+              <span className="text-[11px] font-normal text-emerald-600 dark:text-emerald-400">
+                Filtered
+              </span>
+            )}
           </div>
-          <div className="divide-y divide-slate-100 dark:divide-slate-800 max-h-[500px] overflow-y-auto">
-            {sessions.length === 0 ? (
+          <div className="divide-y divide-slate-100 dark:divide-slate-800 max-h-[550px] overflow-y-auto">
+            {filteredSessions.length === 0 ? (
               <div className="p-6 text-center text-xs text-slate-400">
-                No active conversations recorded yet.
+                {searchTerm ? 'No matching farmer consultations found.' : 'No consultations recorded yet.'}
               </div>
             ) : (
-              sessions.map((s) => {
+              filteredSessions.map((s) => {
                 const isSelected = selectedSession?.sessionId === s.sessionId;
                 const badge = getSafetyBadge(s);
                 return (
@@ -102,24 +151,36 @@ export const ChatMonitor: React.FC<ChatMonitorProps> = ({
                     onClick={() => setSelectedSession(s)}
                     className={`w-full text-left p-3 transition-colors cursor-pointer block ${
                       isSelected
-                        ? 'bg-emerald-50/80 dark:bg-emerald-950/40 border-l-4 border-emerald-600'
+                        ? 'bg-emerald-50/90 dark:bg-emerald-950/50 border-l-4 border-emerald-600'
                         : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <span className="font-mono text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[120px]">
-                        {s.sessionId}
-                      </span>
+                      <div className="flex items-center gap-1.5 truncate">
+                        <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 flex items-center justify-center shrink-0">
+                          <User className="w-3 h-3" />
+                        </div>
+                        <span className="font-bold text-xs text-slate-800 dark:text-slate-100 truncate">
+                          {s.username || 'Farmer'}
+                        </span>
+                      </div>
                       <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${badge.color}`}>
                         {badge.label}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300">
-                      <span className="capitalize font-semibold">{s.persistedAnimal || 'General'}</span>
-                      <span className="text-slate-400">•</span>
+                    {s.userEmail && (
+                      <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate mb-1">
+                        {s.userEmail}
+                      </div>
+                    )}
+                    <div className="flex items-center gap-2 text-[11px] text-slate-600 dark:text-slate-400">
+                      <span className="capitalize font-semibold text-emerald-600 dark:text-emerald-400">
+                        {s.persistedAnimal || 'General'}
+                      </span>
+                      <span>•</span>
                       <span className="uppercase text-[10px] font-mono">{s.persistedLanguage}</span>
-                      <span className="text-slate-400">•</span>
-                      <span className="text-[11px] text-slate-400">{s.messageCount} msgs</span>
+                      <span>•</span>
+                      <span>{s.messageCount} msgs</span>
                     </div>
                   </button>
                 );
@@ -132,25 +193,61 @@ export const ChatMonitor: React.FC<ChatMonitorProps> = ({
         <div className="md:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-xs flex flex-col h-[550px]">
           {selectedSession ? (
             <>
-              <div className="pb-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <div>
-                  <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100 m-0">
-                    Transcript: <span className="font-mono font-normal text-emerald-600">{selectedSession.sessionId}</span>
-                  </h4>
-                  <p className="text-[11px] text-slate-400 m-0">
-                    Animal: <b className="capitalize text-slate-600 dark:text-slate-300">{selectedSession.persistedAnimal || 'Unspecified'}</b> | Lang: <b className="uppercase">{selectedSession.persistedLanguage}</b>
-                  </p>
+              {/* Farmer Profile Header */}
+              <div className="pb-3 border-b border-slate-100 dark:border-slate-800 flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-bold text-sm shadow-xs">
+                      {selectedSession.username ? selectedSession.username[0].toUpperCase() : 'F'}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 m-0">
+                          {selectedSession.username || 'Farmer'}
+                        </h4>
+                        <span className="text-[10px] font-semibold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+                          {selectedSession.userRole || 'Farmer'}
+                        </span>
+                      </div>
+                      {selectedSession.userEmail && (
+                        <p className="text-xs text-slate-500 dark:text-slate-400 m-0">
+                          {selectedSession.userEmail}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-[11px] text-slate-400 flex items-center gap-1 justify-end">
+                      <Clock className="w-3.5 h-3.5" />
+                      <span>{new Date(selectedSession.lastActiveAt).toLocaleString()}</span>
+                    </div>
+                    <div className="text-[10px] font-mono text-slate-400 mt-0.5">
+                      Session: {selectedSession.sessionId.substring(0, 12)}...
+                    </div>
+                  </div>
                 </div>
-                <div className="text-[11px] text-slate-400 flex items-center gap-1">
-                  <Clock className="w-3.5 h-3.5" />
-                  <span>{new Date(selectedSession.lastActiveAt).toLocaleTimeString()}</span>
+
+                {/* Consultation Details Pill */}
+                <div className="flex flex-wrap items-center gap-3 text-xs bg-slate-50 dark:bg-slate-800/60 p-2 rounded-lg text-slate-600 dark:text-slate-300">
+                  <div>
+                    Animal: <b className="capitalize text-emerald-600 dark:text-emerald-400">{selectedSession.persistedAnimal || 'General'}</b>
+                  </div>
+                  <div>•</div>
+                  <div>
+                    Language: <b className="uppercase font-mono">{selectedSession.persistedLanguage}</b>
+                  </div>
+                  <div>•</div>
+                  <div className="truncate max-w-[280px]">
+                    Title: <span className="italic">{selectedSession.title || 'Veterinary Triage'}</span>
+                  </div>
                 </div>
               </div>
 
+              {/* Chat Messages */}
               <div className="flex-1 overflow-y-auto space-y-3 py-3 pr-2">
                 {selectedSession.recentMessages.length === 0 ? (
                   <div className="text-center py-12 text-xs text-slate-400">
-                    No messages in this session yet.
+                    No messages in this consultation yet.
                   </div>
                 ) : (
                   selectedSession.recentMessages.map((msg, i) => {
@@ -172,8 +269,8 @@ export const ChatMonitor: React.FC<ChatMonitorProps> = ({
                           {msg.content}
                         </div>
                         {isUser && (
-                          <div className="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center shrink-0 mt-1">
-                            <User className="w-3.5 h-3.5" />
+                          <div className="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center shrink-0 mt-1 font-bold text-[10px]">
+                            {selectedSession.username ? selectedSession.username[0].toUpperCase() : 'U'}
                           </div>
                         )}
                       </div>
@@ -184,7 +281,7 @@ export const ChatMonitor: React.FC<ChatMonitorProps> = ({
             </>
           ) : (
             <div className="flex items-center justify-center h-full text-xs text-slate-400">
-              Select a consultation session on the left to view the live transcript.
+              Select a farmer consultation on the left to view the complete audit transcript.
             </div>
           )}
         </div>

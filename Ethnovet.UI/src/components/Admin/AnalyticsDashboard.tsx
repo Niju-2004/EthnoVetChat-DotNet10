@@ -9,6 +9,7 @@ interface AnalyticsDashboardProps {
 
 interface AnalyticsData {
   totalRemedies: number;
+  totalRegisteredUsers: number;
   totalActiveSessions: number;
   totalMessagesRecorded: number;
   queriesByAnimal: Record<string, number>;
@@ -63,14 +64,14 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* 4 Metric Counter Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-xs">
+      {/* 5 Metric Counter Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+            <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               Total Remedies
             </span>
-            <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
               <Database className="w-4 h-4" />
             </div>
           </div>
@@ -80,49 +81,64 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
           <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">Verified Traditional EVP</span>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-xs">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-              Active Sessions
+            <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              Farmers Registered
             </span>
-            <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
               <Users className="w-4 h-4" />
+            </div>
+          </div>
+          <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400 mt-2 mb-0">
+            {data?.totalRegisteredUsers ?? 0}
+          </p>
+          <span className="text-[11px] text-indigo-500 dark:text-indigo-400 font-medium">Verified Accounts</span>
+        </div>
+
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl shadow-xs">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              Consultations
+            </span>
+            <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+              <MessageSquare className="w-4 h-4" />
             </div>
           </div>
           <p className="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-2 mb-0">
             {data?.totalActiveSessions ?? 0}
           </p>
-          <span className="text-[11px] text-blue-600 dark:text-blue-400 font-medium">In-Memory 5-Turn Cache</span>
+          <span className="text-[11px] text-blue-600 dark:text-blue-400 font-medium">Saved Cloud Sessions</span>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-xs">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-              Messages Logged
+            <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              Messages
             </span>
-            <div className="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400 flex items-center justify-center">
-              <MessageSquare className="w-4 h-4" />
+            <div className="w-8 h-8 rounded-xl bg-purple-50 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+              <Activity className="w-4 h-4" />
             </div>
           </div>
           <p className="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-2 mb-0">
             {data?.totalMessagesRecorded ?? 0}
           </p>
-          <span className="text-[11px] text-purple-600 dark:text-purple-400 font-medium">Farmer Conversations</span>
+          <span className="text-[11px] text-purple-600 dark:text-purple-400 font-medium">Conversations Logged</span>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-xs">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+            <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               API Health
             </span>
-            <div className="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-950/80 text-amber-600 dark:text-amber-400 flex items-center justify-center">
-              <Activity className="w-4 h-4" />
+            <div className="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-950/80 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+              <Globe className="w-4 h-4" />
             </div>
           </div>
           <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-2 mb-0">
             Online
           </p>
-          <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Gemini 3.1 Flash Lite</span>
+          <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">AI RAG Engine</span>
         </div>
       </div>
 

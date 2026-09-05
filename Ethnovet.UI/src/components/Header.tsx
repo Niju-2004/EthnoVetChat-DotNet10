@@ -44,7 +44,7 @@ export const Header: React.FC<HeaderProps> = ({
               <h1 className="text-xl font-bold tracking-tight text-white m-0">EthnoVet Chat</h1>
               <span className="inline-flex items-center gap-1 text-[11px] font-semibold bg-emerald-700/80 dark:bg-emerald-900/60 text-emerald-200 px-2 py-0.5 rounded-full border border-emerald-600/40 dark:border-emerald-700/50">
                 <Sparkles className="w-3 h-3 text-amber-300" />
-                Gemini AI RAG
+                AI RAG
               </span>
             </div>
             <p className="text-xs text-emerald-200/90 dark:text-slate-400 m-0">

@@ -18,6 +18,7 @@ namespace EthnovetChat.ServiceLayer.DTOs
     public class AdminAnalyticsDto
     {
         public int TotalRemedies { get; set; }
+        public int TotalRegisteredUsers { get; set; }
         public int TotalActiveSessions { get; set; }
         public int TotalMessagesRecorded { get; set; }
         public Dictionary<string, int> QueriesByAnimal { get; set; } = new();
@@ -34,6 +35,11 @@ namespace EthnovetChat.ServiceLayer.DTOs
     public class AdminSessionSummaryDto
     {
         public string SessionId { get; set; } = string.Empty;
+        public Guid? UserId { get; set; }
+        public string? Username { get; set; }
+        public string? UserEmail { get; set; }
+        public string? UserRole { get; set; }
+        public string Title { get; set; } = "New Consultation";
         public DateTime CreatedAt { get; set; }
         public DateTime LastActiveAt { get; set; }
         public string? PersistedAnimal { get; set; }

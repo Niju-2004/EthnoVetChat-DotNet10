@@ -9,7 +9,7 @@ import { RegisterWizard } from './components/Auth/RegisterWizard';
 import { LoginModal } from './components/Auth/LoginModal';
 import { ChatHistoryDrawer } from './components/ChatHistoryDrawer';
 import type { ChatMessage, User as UserType, Remedy } from './types';
-import { Sparkles, AlertCircle, BookmarkPlus } from 'lucide-react';
+import { Sparkles, AlertCircle, BookmarkPlus, Lock, LogIn, UserCheck } from 'lucide-react';
 
 const SESSION_KEY = 'ethnovet_chat_session_id';
 const THEME_KEY = 'ethnovet_theme';
@@ -165,6 +165,12 @@ export const App: React.FC = () => {
   // Send message to backend with real-time SSE streaming
   const handleSendMessage = async (text: string) => {
     if (!text.trim() || isLoading) return;
+
+    // Check mandatory farmer authentication
+    if (!currentUser || !userToken) {
+      setIsLoginOpen(true);
+      return;
+    }
 
     setError(null);
     const userMsgId = 'usr_' + Date.now();
@@ -445,11 +451,11 @@ export const App: React.FC = () => {
               <span className="font-medium">
                 {currentUser ? (
                   <span>
-                    {language === 'ta' ? 'சேமிக்கப்பட்ட அமர்வு:' : 'Saved Cloud Session:'}
+                    {language === 'ta' ? 'விவசாயி கணக்கு (கிளவுட் சேமிப்பு):' : 'Authenticated Cloud Session:'}
                   </span>
                 ) : (
                   <span>
-                    {language === 'ta' ? 'தற்காலிக அமர்வு (5 நினைவகம்):' : 'Guest Session (5-turn Memory):'}
+                    {language === 'ta' ? 'உள்நுழைவு தேவை:' : 'Sign In Required:'}
                   </span>
                 )}
               </span>
@@ -522,13 +528,51 @@ export const App: React.FC = () => {
         </div>
       </main>
 
-      {/* Input Section */}
-      <ChatInput
-        onSendMessage={handleSendMessage}
-        isLoading={isLoading}
-        language={language}
-        selectedAnimal={selectedAnimal}
-      />
+      {/* Input Section - Authenticated Farmers Only */}
+      {currentUser ? (
+        <ChatInput
+          onSendMessage={handleSendMessage}
+          isLoading={isLoading}
+          language={language}
+          selectedAnimal={selectedAnimal}
+        />
+      ) : (
+        <div className="max-w-4xl w-full mx-auto px-4 pb-4">
+          <div className="bg-white dark:bg-slate-900 border-2 border-dashed border-emerald-500/40 dark:border-emerald-600/40 rounded-2xl p-5 shadow-sm text-center flex flex-col items-center justify-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 flex items-center justify-center shadow-xs">
+              <Lock className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 m-0">
+                {language === 'ta'
+                  ? 'கால்நடை மருத்துவ ஆலோசனை பெற உள்நுழையவும்'
+                  : 'Farmer Sign In Required'}
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto mt-1 mb-0">
+                {language === 'ta'
+                  ? 'உங்கள் கால்நடைகளுக்கான மூலிகை மருத்துவ ஆலோசனையைப் பெறவும், முந்தைய மருத்துவக் குறிப்புகளைப் பாதுகாப்பாகச் சேமிக்கவும் உள்நுழையவும் அல்லது புதிய பதிவை மேற்கொள்ளவும்.'
+                  : 'To consult the EthnoVet AI assistant, receive verified traditional remedies, and securely track your livestock treatment history, please sign in or register.'}
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+              <button
+                onClick={() => setIsLoginOpen(true)}
+                className="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer flex items-center gap-1.5"
+              >
+                <LogIn className="w-4 h-4" />
+                <span>{language === 'ta' ? 'உள்நுழையவும்' : 'Sign In to Consult'}</span>
+              </button>
+              <button
+                onClick={() => setIsRegisterOpen(true)}
+                className="px-5 py-2.5 bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 rounded-xl text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5"
+              >
+                <UserCheck className="w-4 h-4" />
+                <span>{language === 'ta' ? 'புதிய விவசாயி பதிவு' : 'Register as New Farmer'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Global Disclaimer Footer */}
       <footer className="text-center py-2 px-4 text-[11px] text-slate-500 dark:text-slate-400 border-t border-slate-200/80 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-900/50 transition-colors duration-200">

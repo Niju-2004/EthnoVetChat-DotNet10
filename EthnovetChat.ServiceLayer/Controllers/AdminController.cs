@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using EthnovetChat.DataAccessLayer.Data;
 using EthnovetChat.DataAccessLayer.Models;
 using EthnovetChat.DataAccessLayer.Repositories;
 using EthnovetChat.ServiceLayer.DTOs;
@@ -14,6 +16,7 @@ namespace EthnovetChat.ServiceLayer.Controllers
         private readonly IEthnovetRepository _repository;
         private readonly ISessionService _sessionService;
         private readonly IGeminiService _geminiService;
+        private readonly EthnovetDbContext _dbContext;
         private readonly IConfiguration _configuration;
         private readonly ILogger<AdminController> _logger;
 
@@ -22,6 +25,7 @@ namespace EthnovetChat.ServiceLayer.Controllers
             IEthnovetRepository repository,
             ISessionService sessionService,
             IGeminiService geminiService,
+            EthnovetDbContext dbContext,
             IConfiguration configuration,
             ILogger<AdminController> logger)
         {
@@ -29,6 +33,7 @@ namespace EthnovetChat.ServiceLayer.Controllers
             _repository = repository;
             _sessionService = sessionService;
             _geminiService = geminiService;
+            _dbContext = dbContext;
             _configuration = configuration;
             _logger = logger;
         }
@@ -93,7 +98,9 @@ namespace EthnovetChat.ServiceLayer.Controllers
             if (!IsAuthorized()) return Unauthorized();
 
             var remedies = await _repository.GetAllAsync(cancellationToken);
-            var sessions = _sessionService.GetAllSessions();
+            int registeredUsers = 0;
+            int totalSessions = 0;
+            int totalMessages = 0;
 
             var animalCounts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
             var langCounts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
@@ -101,28 +108,69 @@ namespace EthnovetChat.ServiceLayer.Controllers
                 ["en"] = 0,
                 ["ta"] = 0
             };
-
-            int totalMessages = 0;
             var diseaseFrequencies = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
-            foreach (var s in sessions)
+            try
             {
-                totalMessages += s.Messages.Count;
+                registeredUsers = await _dbContext.Users.CountAsync(cancellationToken);
+                var dbSessions = await _dbContext.Sessions
+                    .Include(s => s.Messages)
+                    .ToListAsync(cancellationToken);
 
-                var anim = string.IsNullOrWhiteSpace(s.PersistedAnimal) ? "General / Unspecified" : s.PersistedAnimal;
-                animalCounts[anim] = animalCounts.GetValueOrDefault(anim) + 1;
-
-                var lang = string.IsNullOrWhiteSpace(s.PersistedLanguage) ? "en" : s.PersistedLanguage;
-                langCounts[lang] = langCounts.GetValueOrDefault(lang) + 1;
-
-                // Track disease frequencies mentioned in user prompts
-                foreach (var m in s.Messages.Where(m => m.Role == "user"))
+                if (dbSessions.Count > 0)
                 {
-                    foreach (var r in remedies)
+                    totalSessions = dbSessions.Count;
+                    foreach (var s in dbSessions)
                     {
-                        if (m.Content.Contains(r.Disease, StringComparison.OrdinalIgnoreCase))
+                        totalMessages += s.Messages.Count;
+
+                        var anim = string.IsNullOrWhiteSpace(s.PersistedAnimal) ? "General / Unspecified" : s.PersistedAnimal;
+                        animalCounts[anim] = animalCounts.GetValueOrDefault(anim) + 1;
+
+                        var lang = string.IsNullOrWhiteSpace(s.PersistedLanguage) ? "en" : s.PersistedLanguage;
+                        langCounts[lang] = langCounts.GetValueOrDefault(lang) + 1;
+
+                        foreach (var m in s.Messages.Where(m => m.Role == "user"))
                         {
-                            diseaseFrequencies[r.Disease] = diseaseFrequencies.GetValueOrDefault(r.Disease) + 1;
+                            foreach (var r in remedies)
+                            {
+                                if (m.Content.Contains(r.Disease, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    diseaseFrequencies[r.Disease] = diseaseFrequencies.GetValueOrDefault(r.Disease) + 1;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("Analytics DB query note: {Message}", ex.Message);
+            }
+
+            // Fallback / supplement with in-memory sessions if DB has no sessions
+            if (totalSessions == 0)
+            {
+                var sessions = _sessionService.GetAllSessions();
+                totalSessions = sessions.Count;
+                foreach (var s in sessions)
+                {
+                    totalMessages += s.Messages.Count;
+
+                    var anim = string.IsNullOrWhiteSpace(s.PersistedAnimal) ? "General / Unspecified" : s.PersistedAnimal;
+                    animalCounts[anim] = animalCounts.GetValueOrDefault(anim) + 1;
+
+                    var lang = string.IsNullOrWhiteSpace(s.PersistedLanguage) ? "en" : s.PersistedLanguage;
+                    langCounts[lang] = langCounts.GetValueOrDefault(lang) + 1;
+
+                    foreach (var m in s.Messages.Where(m => m.Role == "user"))
+                    {
+                        foreach (var r in remedies)
+                        {
+                            if (m.Content.Contains(r.Disease, StringComparison.OrdinalIgnoreCase))
+                            {
+                                diseaseFrequencies[r.Disease] = diseaseFrequencies.GetValueOrDefault(r.Disease) + 1;
+                            }
                         }
                     }
                 }
@@ -150,7 +198,8 @@ namespace EthnovetChat.ServiceLayer.Controllers
             return Ok(new AdminAnalyticsDto
             {
                 TotalRemedies = remedies.Count,
-                TotalActiveSessions = sessions.Count,
+                TotalRegisteredUsers = registeredUsers,
+                TotalActiveSessions = totalSessions,
                 TotalMessagesRecorded = totalMessages,
                 QueriesByAnimal = animalCounts,
                 QueriesByLanguage = langCounts,
@@ -239,17 +288,65 @@ namespace EthnovetChat.ServiceLayer.Controllers
         }
 
         /// <summary>
-        /// Live inspection of consultation sessions and messages.
+        /// Live inspection of consultation sessions and messages with farmer identification.
         /// </summary>
         [HttpGet("chats")]
-        public IActionResult GetChatSessions()
+        public async Task<IActionResult> GetChatSessions(CancellationToken cancellationToken)
         {
             if (!IsAuthorized()) return Unauthorized();
+
+            try
+            {
+                var dbSessions = await _dbContext.Sessions
+                    .Include(s => s.User)
+                    .Include(s => s.Messages)
+                    .OrderByDescending(s => s.LastActiveAt)
+                    .Take(100)
+                    .ToListAsync(cancellationToken);
+
+                if (dbSessions.Count > 0)
+                {
+                    var dbSummaries = dbSessions.Select(s => new AdminSessionSummaryDto
+                    {
+                        SessionId = s.SessionId,
+                        UserId = s.UserId,
+                        Username = s.User != null ? s.User.Username : "Farmer",
+                        UserEmail = s.User != null ? s.User.Email : null,
+                        UserRole = s.User != null ? s.User.Role : "Farmer",
+                        Title = s.Title,
+                        CreatedAt = s.CreatedAt,
+                        LastActiveAt = s.LastActiveAt,
+                        PersistedAnimal = s.PersistedAnimal,
+                        PersistedLanguage = s.PersistedLanguage ?? "en",
+                        MessageCount = s.Messages.Count,
+                        RecentMessages = s.Messages
+                            .OrderBy(m => m.Timestamp)
+                            .TakeLast(15)
+                            .Select(m => new AdminMessageDto
+                            {
+                                Role = m.Role,
+                                Content = m.Content,
+                                Timestamp = m.Timestamp
+                            }).ToList()
+                    }).ToList();
+
+                    return Ok(dbSummaries);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("DB query in GetChatSessions note: {Message}", ex.Message);
+            }
 
             var sessions = _sessionService.GetAllSessions();
             var summaries = sessions.Select(s => new AdminSessionSummaryDto
             {
                 SessionId = s.SessionId,
+                UserId = s.UserId,
+                Username = s.UserId.HasValue ? "Registered Farmer" : "Farmer",
+                UserEmail = null,
+                UserRole = "Farmer",
+                Title = "Consultation",
                 CreatedAt = s.CreatedAt,
                 LastActiveAt = s.LastActiveAt,
                 PersistedAnimal = s.PersistedAnimal,
