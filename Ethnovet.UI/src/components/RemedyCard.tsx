@@ -73,3 +73,4 @@ export const RemedyCard: React.FC<RemedyCardProps> = ({ remedy, language }) => {
     </div>
   );
 };
+

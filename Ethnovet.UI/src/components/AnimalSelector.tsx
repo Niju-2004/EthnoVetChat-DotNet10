@@ -55,3 +55,4 @@ export const AnimalSelector: React.FC<AnimalSelectorProps> = ({
     </div>
   );
 };
+
