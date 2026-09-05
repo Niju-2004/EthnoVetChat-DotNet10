@@ -1,0 +1,13 @@
+﻿services:
+  - type: web
+    name: ethnovet-chat-api
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/chat/health
+    envVars:
+      - key: Gemini__ApiKey
+        sync: false
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production

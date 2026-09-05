@@ -7,6 +7,7 @@ import type { ChatMessage } from './types';
 import { Sparkles, AlertCircle } from 'lucide-react';
 
 const SESSION_KEY = 'ethnovet_chat_session_id';
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
 
 const getInitialGreeting = (lang: 'en' | 'ta'): ChatMessage => {
   return {
@@ -107,7 +108,7 @@ export const App: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/chat/stream', {
+      const response = await fetch(`${API_BASE}/api/chat/stream`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -202,7 +203,7 @@ export const App: React.FC = () => {
 
     try {
       if (sessionId) {
-        await fetch(`/api/chat/sessions/${sessionId}`, {
+        await fetch(`${API_BASE}/api/chat/sessions/${sessionId}`, {
           method: 'DELETE',
         }).catch(() => {
           // ignore cleanup network issues

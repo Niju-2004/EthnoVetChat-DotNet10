@@ -30,24 +30,31 @@ namespace EthnovetChat.ServiceLayer
                 });
             });
 
+            // Enable dynamic port binding for cloud environments (e.g. Render, Railway)
+            var port = Environment.GetEnvironmentVariable("PORT");
+            if (!string.IsNullOrEmpty(port))
+            {
+                builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+            }
+
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            // Enable Swagger / OpenAPI for easy cloud testing and documentation
+            app.MapOpenApi();
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/openapi/v1.json", "EthnoVet Chat API v1");
+                options.RoutePrefix = "swagger";
+            });
+
             if (app.Environment.IsDevelopment())
             {
-                app.MapOpenApi();
-                app.UseSwaggerUI(options =>
-                {
-                    options.SwaggerEndpoint("/openapi/v1.json", "EthnoVet Chat API v1");
-                    options.RoutePrefix = "swagger";
-                });
                 Scalar.AspNetCore.ScalarEndpointRouteBuilderExtensions.MapScalarApiReference(app);
+                app.UseHttpsRedirection();
             }
 
             // Redirect root to swagger
             app.MapGet("/", () => Results.Redirect("/swagger"));
-
-            app.UseHttpsRedirection();
 
             app.UseCors("AllowAll");
 
