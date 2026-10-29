@@ -2,6 +2,9 @@
 
 **EthnoVet Chat** (also known as **Niju App** or **Niju Chat App**) is an intelligent, clinically safe, bilingual AI assistant for traditional veterinary livestock healthcare created by **Niju**.
 
+👉 **[Launch Live Web Application: https://ethnovet.vercel.app/](https://ethnovet.vercel.app/)**
+
+[![Live Demo](https://img.shields.io/badge/Live_App-ethnovet.vercel.app-059669?style=for-the-badge&logo=vercel)](https://ethnovet.vercel.app/)
 [![Author](https://img.shields.io/badge/Author-Niju-059669?style=flat&logo=github)](https://github.com/Niju-2004)
 [![App](https://img.shields.io/badge/App-Niju_Chat_App-emerald?style=flat)](https://ethnovet.vercel.app/)
 [![.NET 10](https://img.shields.io/badge/.NET-10.0-512BD4?style=flat&logo=dotnet)](https://dotnet.microsoft.com/)
